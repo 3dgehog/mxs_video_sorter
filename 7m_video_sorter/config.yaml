@@ -1,0 +1,11 @@
+# This is the main config file for 7m_video_sorter
+
+# The directory it will search for the videos
+input_dir: ""
+
+# The direcotry it will copy the videos
+output_dir: ""
+
+# Advanced options
+# Path to any command needed before starting the app
+pre_execute: ""
