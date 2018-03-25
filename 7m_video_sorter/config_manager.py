@@ -13,7 +13,7 @@ class ConfigManager:
             self.yamlconfig = yaml.load(ymlfile)
         self._pre_execute()
         self.input_dir, self.output_dir = self.get_dirs()
-        self.file_ignore = self.yamlconfig.file_ignore
+        self.file_ignore = self.yamlconfig["file_ignore"]
         self.regex_file_extensions_pattern = self._compile_video_file_extensions_pattern()
 
     def get_dirs(self):

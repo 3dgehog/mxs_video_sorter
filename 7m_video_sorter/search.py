@@ -11,7 +11,7 @@ def search_dir(config, search_queue):
             logger.debug("ignored item {}".format(item))
             continue
         logger.debug("working on item {}".format(item))
-        seaobj = SearchObject(os.path.join(config, item))
+        seaobj = SearchObject(config, item)
         if seaobj.valid:
             logger.debug("item {} added to search queue".format(item))
             search_queue.put(seaobj)
@@ -37,11 +37,11 @@ class SearchObject:
         if self.isdir:
             for item in os.listdir(self.path):
                 # if secondary directory, ignore
-                if os.path.join(self.item, item):
+                if os.path.isdir(os.path.join(self.item, item)):
                     continue
 
                 # if file has file extension
-                if self.config.regex_file_extensions_pattern.match(self.item):
+                if self.config.regex_file_extensions_pattern.match(item):
                     # if file was already valid, break and set to not valid
                     # reason: does not support multiple files right now!!
                     if self.valid:
