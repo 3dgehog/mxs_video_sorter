@@ -18,14 +18,12 @@ class ConfigManager:
 
     def get_dirs(self):
         """Returns [input_dir, output_dir] from either the config.yaml file of
-        the environment variables $INPUT_DIR and $OUTPUT_DIR. To add to
-        environment variables enter: export INPUT_DIR='/path/to/input/file'"""
+        the environment variables $INPUT_DIR and $OUTPUT_DIR.'"""
         dirs = []
         for dir in ["input_dir", "output_dir"]:
             if self.yamlconfig[dir]:
-                dirs.append(self.yamlconfig[dir])
-            elif os.environ.get(dir.upper()):
-                dirs.append(os.environ.get(dir.upper()))
+                dir = os.path.abspath(self.yamlconfig[dir])
+                dirs.append(dir)
             else:
                 raise ValueError("Couldn't find {}".format(dir))
         # Check if the paths exists, its no use running otherwise :P
