@@ -1,10 +1,21 @@
 # This is the main config file for 7m_video_sorter
 
 # The directory it will search for the videos
-input_dir: ""
+input_dir: "sample/Input Folder/"
 
 # The direcotry it will copy the videos
-output_dir: ""
+output_dir: "sample/Output Folder/"
+
+# Files to ignore in input folder
+file_ignore:
+  - ".stversions"
+
+# Which file extensions should be searched for
+video_file_extensions:
+  - mkv
+  - m4v
+  - avi
+  - mp4
 
 # Advanced options
 # Path to any command needed before starting the app
