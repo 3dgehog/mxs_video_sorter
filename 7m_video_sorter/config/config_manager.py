@@ -15,27 +15,32 @@ class ConfigManager:
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                   "config.yaml"), 'r') as ymlfile:
             self.yamlconfig = yaml.load(ymlfile)
-        self.input_dir, self.output_dir = self._get_dirs()
+        self.input_dir = self._get_input_dir()
+        self.output_dirs = self._get_output_dir()
         self.ignore = self.yamlconfig["ignore"]
         self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
 
     video_extension_list = ['mkv', 'm4v', 'avi', 'mp4']
 
-    def _get_dirs(self):
-        """Returns [input_dir, output_dir] from the config.yaml file"""
+    def _get_output_dir(self):
         dirs = []
-        for dir in ["input_dir", "output_dir"]:
-            if self.yamlconfig[dir]:
-                dir = os.path.abspath(self.yamlconfig[dir])
-                dirs.append(dir)
-            else:
-                raise ValueError("Couldn't find {}".format(dir))
-        # Check if the paths exists, its no use running otherwise :P
-        for dir in dirs:
+        for dir in self.yamlconfig["output_dirs"]:
+            if not dir:
+                raise ValueError("Couldn't find output directories from config.yaml")
             if not os.path.exists(dir):
-                raise ValueError("{} doesn't exists".format(dir))
-        logger.debug("got dirs {}".format(dirs))
+                raise ValueError("Output Directory '{}' doesn't exists".format(dirs))
+            dirs.append(dir)
+        logger.debug("got output dirs '{}'".format(dirs))
         return dirs
+
+    def _get_input_dir(self):
+        """Returns input_dir from the config.yaml file"""
+        if not self.yamlconfig["input_dir"]:
+            raise ValueError("Couldn't find input directory from config.yaml")
+        if not os.path.exists(self.yamlconfig["input_dir"]):
+            raise ValueError("{} doesn't exists".format(self.yamlconfig["input_dir"]))
+        logger.debug("got input dir {}".format(self.yamlconfig["input_dir"]))
+        return self.yamlconfig["input_dir"]
 
     def _compile_video_file_extensions_pattern(self):
         """returns re.compile('^.*(\.mkv|\.mp4)$', re.IGNORECASE)"""

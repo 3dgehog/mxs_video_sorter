@@ -4,7 +4,9 @@
 input_dir: "sample/Input Folder/"
 
 # The direcotry it will copy the videos
-output_dir: "sample/Output Folder/"
+output_dirs:
+  - "sample/Output Folder/Anime"
+  - "sample/Output Folder/Series/English"
 
 # Files to ignore in input folder
 ignore:
