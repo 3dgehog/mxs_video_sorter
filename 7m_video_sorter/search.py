@@ -8,13 +8,12 @@ logger = logging.getLogger('main')
 def search_dir(config, search_queue):
     for item in os.listdir(config.input_dir):
         if item in config.file_ignore:
-            logger.debug("ignored item {}".format(item))
+            logger.debug("item {} ignored".format(item))
             continue
-        logger.debug("working on item {}".format(item))
-        seaobj = SearchObject(config, item)
-        if seaobj.valid:
+        search_obj = SearchObject(config, item)
+        if search_obj.valid:
             logger.debug("item {} added to search queue".format(item))
-            search_queue.put(seaobj)
+            search_queue.put(search_obj)
 
 
 class SearchObject:
@@ -41,7 +40,7 @@ class SearchObject:
                     continue
 
                 # if file has file extension
-                if self.config.regex_file_extensions_pattern.match(item):
+                if self.config.re_compile_file_extension.match(item):
                     # if file was already valid, break and set to not valid
                     # reason: does not support multiple files right now!!
                     if self.valid:
@@ -52,6 +51,6 @@ class SearchObject:
 
         else:
             # check if the file found has a valid file extension
-            if self.config.regex_file_extensions_pattern.match(self.item):
+            if self.config.re_compile_file_extension.match(self.item):
                 self.vfile = self.item
                 self.valid = True

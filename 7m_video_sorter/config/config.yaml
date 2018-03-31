@@ -16,7 +16,3 @@ video_file_extensions:
   - m4v
   - avi
   - mp4
-
-# Advanced options
-# Path to any command needed before starting the app
-pre_execute: ""
