@@ -7,12 +7,5 @@ input_dir: "sample/Input Folder/"
 output_dir: "sample/Output Folder/"
 
 # Files to ignore in input folder
-file_ignore:
+ignore:
   - ".stversions"
-
-# Which file extensions should be searched for
-video_file_extensions:
-  - mkv
-  - m4v
-  - avi
-  - mp4

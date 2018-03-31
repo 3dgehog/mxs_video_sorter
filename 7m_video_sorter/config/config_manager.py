@@ -7,15 +7,21 @@ logger = logging.getLogger('main')
 
 
 class ConfigManager:
+    """A controller to access all the configs from the config files.
+    - input_dir : Input Directory
+    - output_dir : Output Directory
+    - ignore : List of File System Entries to out right ignore"""
     def __init__(self):
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                   "config.yaml"), 'r') as ymlfile:
             self.yamlconfig = yaml.load(ymlfile)
-        self.input_dir, self.output_dir = self.get_dirs()
-        self.file_ignore = self.yamlconfig["file_ignore"]
+        self.input_dir, self.output_dir = self._get_dirs()
+        self.ignore = self.yamlconfig["ignore"]
         self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
 
-    def get_dirs(self):
+    video_extension_list = ['mkv', 'm4v', 'avi', 'mp4']
+
+    def _get_dirs(self):
         """Returns [input_dir, output_dir] from the config.yaml file"""
         dirs = []
         for dir in ["input_dir", "output_dir"]:
@@ -33,7 +39,7 @@ class ConfigManager:
 
     def _compile_video_file_extensions_pattern(self):
         """returns re.compile('^.*(\.mkv|\.mp4)$', re.IGNORECASE)"""
-        extensions = self.yamlconfig["video_file_extensions"]
+        extensions = self.video_extension_list
         output = '^.*('
         for extension in extensions:
             output = output + '\.' + extension + '|'

@@ -1,56 +1,27 @@
 import os
 import logging
+from file_system_entry import FileSystemEntry
 # import re
 
 logger = logging.getLogger('main')
 
 
-def search_dir(config, search_queue):
+def search(config, search_queue):
     for item in os.listdir(config.input_dir):
-        if item in config.file_ignore:
+
+        # Ignore config ignore files
+        if item in config.ignore:
             logger.debug("item {} ignored".format(item))
             continue
-        search_obj = SearchObject(config, item)
-        if search_obj.valid:
+
+        # Create File System Entry
+        fse = FileSystemEntry(config, item)
+
+        # Add FSE to queue is its valid
+        if fse.valid:
             logger.debug("item {} added to search queue".format(item))
-            search_queue.put(search_obj)
+            search_queue.put(fse)
 
-
-class SearchObject:
-    def __init__(self, config, item):
-        self.config = config
-        self.path = os.path.join(config.input_dir, item)
-        self.item = item
-        self.dirname = config.input_dir
-        self.get_info()
-
-    def get_info(self):
-        """Attributes are:
-        - valid (if its a valid file)
-        - isdir (if its a directory)
-        - vfile (video files)
-        """
-        self.valid = False
-        self.isdir = os.path.isdir(self.path)
-
-        if self.isdir:
-            for item in os.listdir(self.path):
-                # if secondary directory, ignore
-                if os.path.isdir(os.path.join(self.item, item)):
-                    continue
-
-                # if file has file extension
-                if self.config.re_compile_file_extension.match(item):
-                    # if file was already valid, break and set to not valid
-                    # reason: does not support multiple files right now!!
-                    if self.valid:
-                        self.valid = False
-                        break
-                    self.vfile = item
-                    self.valid = True
-
-        else:
-            # check if the file found has a valid file extension
-            if self.config.re_compile_file_extension.match(self.item):
-                self.vfile = self.item
-                self.valid = True
+    # Send 'end' signal
+    search_queue.put("end")
+    logger.info("Search Done")
