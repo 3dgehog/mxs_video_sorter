@@ -35,6 +35,9 @@ logger.setLevel(10)
 config = config.ConfigManager()
 config.args = args
 
+# print(config.rule_book)
+# raise
+
 match_queue = queue.Queue()
 search_queue = queue.Queue()
 

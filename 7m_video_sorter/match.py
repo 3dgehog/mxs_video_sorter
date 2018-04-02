@@ -9,7 +9,7 @@ logger = logging.getLogger('main')
 
 
 def matcher(config, search_queue, match_queue):
-	logging.debug("Matcher Running")
+	logger.debug("Matcher Running")
 	output_index = _index_output_dirs(config)
 	# search_queue.qsize()
 	while True:
@@ -20,22 +20,24 @@ def matcher(config, search_queue, match_queue):
 		fse = search_queue.get()
 
 		match = guessit.guessit(fse.vfile)
-		logger.info('---' + match['title'] + '---')
+		fse.title = match['title']
 
-		if not match['title'].upper() in config.valid_list:
-			logger.info('***NOT IN LIST***')
+		fse = rules.before_matching(config, match, fse)
+
+		logger.debug('---' + fse.title + '---')
+
+		if not fse.title.upper() in config.valid_list:
+			logger.debug('***NOT IN LIST***')
 			if not config.args.review:
 				continue
 
-		match = rules.before_matching(config, match, fse)
-
-		diffmatch = difflib.get_close_matches(match['title'], output_index.keys(), n=1)
+		diffmatch = difflib.get_close_matches(fse.title, output_index.keys(), n=1)
 		if not diffmatch:
-			logger.info("***NO MATCH***")
+			logger.debug("***NO MATCH***")
 			continue
 
-		logger.info(match['title'] + " >>> " + diffmatch[0])
-	logging.info("Matcher Done")
+		logger.debug(fse.title + " >>> " + diffmatch[0])
+	logger.info("Matcher Done")
 
 
 def _index_output_dirs(config):
@@ -50,7 +52,7 @@ def _index_output_dirs(config):
 		for folder in os.listdir(dir):
 			# Ignore not folders
 			if not os.path.isdir(os.path.join(dir, folder)):
-				logging.debug("skipped '{}' because its not a directory".format(folder))
+				logger.debug("skipped '{}' because its not a directory".format(folder))
 				continue
 
 			# Check incase duplicates found in output dirs

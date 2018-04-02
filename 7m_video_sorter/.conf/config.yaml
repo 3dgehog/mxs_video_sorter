@@ -8,13 +8,13 @@ input_dir:
 # list of directories it will copy the videos to
 # Example.
 # output_dirs:
-  # - path/to/dir/1
+#   - path/to/dir/1
 output_dirs:
 
 # list of folders to ignore in input folder
 # Example
 # ignore:
-  # - ".stversions"
+#   - ".stversions"
 ignore:
 
 # Advanced Options
@@ -22,5 +22,5 @@ ignore:
 # list of scripts to run before starting
 # Example:
 # before_scripts:
-  # - "path/to/script"
+#   - "path/to/script"
 before_scripts:

@@ -24,8 +24,13 @@ class ConfigManager:
         self.ignore = self.yamlconfig["ignore"]
         self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
         self._get_valid_list()
+        self._get_rule_book()
 
     video_extension_list = ['mkv', 'm4v', 'avi', 'mp4']
+
+    def _get_rule_book(self):
+        with open(os.path.join(self.config_dir, "rule_book.yaml"), 'r') as ymlfile:
+            self.rule_book = yaml.load(ymlfile)
 
     def _get_yamlconfig(self):
         with open(os.path.join(self.config_dir, "config.yaml"), 'r') as ymlfile:
