@@ -12,11 +12,11 @@ def matcher(config, search_queue, match_queue):
 	output_index = _index_output_dirs(config)
 	# search_queue.qsize()
 	while True:
-		fse = search_queue.get()
-
-		if fse == "end":
-			logger.debug("received 'end' signal, breaking the match loop")
+		if search_queue.qsize() == 0:
+			logger.debug("end of search queue")
 			break
+
+		fse = search_queue.get()
 
 		match = guessit.guessit(fse.vfile)
 		logger.info('---' + match['title'] + '---')
@@ -34,8 +34,6 @@ def matcher(config, search_queue, match_queue):
 			continue
 
 		logger.info(match['title'] + " >>> " + diffmatch[0])
-
-	print(output_index)
 
 
 def _index_output_dirs(config):

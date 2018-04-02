@@ -21,6 +21,4 @@ def searcher(config, search_queue):
             logger.debug("fse '{}' >>> search queue".format(item))
             search_queue.put(fse)
 
-    # Send 'end' signal
-    search_queue.put("end")
     logger.info("Searcher Done")
