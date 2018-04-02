@@ -1,7 +1,6 @@
 import os
 import logging
 from file_system_entry import FileSystemEntry
-# import re
 
 logger = logging.getLogger('main')
 

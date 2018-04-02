@@ -3,11 +3,12 @@ if sys.version_info[0] < 3:
     raise "Must be using Python 3"
 
 import queue
-import config.config_manager as config
+import config
 import logging
 import logging.config
 import yaml
 import argparse
+import progressbar
 
 import search
 import match
@@ -18,8 +19,11 @@ parser.add_argument("-r", "--review",
                     action="store_true")
 args = parser.parse_args()
 
+# fix logging with progressbar
+progressbar.streams.wrap_stderr()
+
 # load logging configs
-with open('7m_video_sorter/config/logging.yaml', 'r') as ymlfile:
+with open('7m_video_sorter/logging.yaml', 'r') as ymlfile:
     yamlconfig = yaml.load(ymlfile)
 logging.config.dictConfig(yamlconfig)
 

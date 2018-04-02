@@ -13,7 +13,9 @@ class ConfigManager:
     - output_dir : [Output Directories]
     - ignore : List of File System Entries to ignore"""
     def __init__(self):
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+        self.config_location = os.path.join(os.environ['HOME'],
+                                            '.config/7m_video_sorter/')
+        with open(os.path.join(self.config_location,
                   "config.yaml"), 'r') as ymlfile:
             self.yamlconfig = yaml.load(ymlfile)
         self._before_scripts()
@@ -26,11 +28,18 @@ class ConfigManager:
     video_extension_list = ['mkv', 'm4v', 'avi', 'mp4']
 
     def _make_valid_list(self):
-        with open(self.yamlconfig['valid_list']) as f:
+        default_path_to_vlist = os.path.join(os.environ['HOME'],
+                                             '.config/7m_video_sorter/valid_list')
+        # makes folder and file if it doesn't exists
+        if not os.path.exists(os.path.dirname(default_path_to_vlist)):
+            os.makedirs(os.path.dirname(default_path_to_vlist))
+            os.system('touch ' + default_path_to_vlist)
+        # checks if config is not default
+        with open(default_path_to_vlist) as f:
             content = f.readlines()
-            content = [x.strip() for x in content]
-            content = [x.upper() for x in content]
-            return content
+        content = [x.strip() for x in content]
+        content = [x.upper() for x in content]
+        return content
 
     def _get_output_dir(self):
         dirs = []
