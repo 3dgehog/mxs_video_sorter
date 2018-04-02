@@ -1,12 +1,15 @@
 import logging
 import os
 import guessit
+import difflib
+
+import rules
 
 logger = logging.getLogger('main')
 
 
 def match(config, search_queue, match_queue):
-	output_index = _index_output_file(config)
+	output_index = _index_output_dirs(config)
 	while True:
 		fse = search_queue.get()
 
@@ -15,9 +18,19 @@ def match(config, search_queue, match_queue):
 			break
 
 		match = guessit.guessit(fse.vfile)
+		match, valid = rules.before_matching(fse, match, config)
+		logger.info('---' + match['title'] + '---')
+		if not valid:
+			logger.info('--- Not in List ---')
+			continue
+		diffmatch = difflib.get_close_matches(match['title'], output_index.keys(), n=1)
+		if diffmatch:
+			logger.info(match['title'] + " >>> " + diffmatch[0])
+		else:
+			logger.info("### NO MATCH ###")
 
 
-def _index_output_file(config):
+def _index_output_dirs(config):
 	"""returns {"foldername": "path", ...} of all output folder in config.yaml"""
 	tempdict = {}
 	for dir in config.output_dirs:

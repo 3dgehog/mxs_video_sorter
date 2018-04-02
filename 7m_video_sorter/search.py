@@ -11,7 +11,7 @@ def search(config, search_queue):
 
         # Ignore config ignore files
         if item in config.ignore:
-            logger.debug("item {} ignored".format(item))
+            logger.debug("fse '{}' ignored".format(item))
             continue
 
         # Create File System Entry
@@ -19,7 +19,7 @@ def search(config, search_queue):
 
         # Add FSE to queue is its valid
         if fse.valid:
-            logger.debug("item {} added to search queue".format(item))
+            logger.debug("fse '{}' >>> search queue".format(item))
             search_queue.put(fse)
 
     # Send 'end' signal

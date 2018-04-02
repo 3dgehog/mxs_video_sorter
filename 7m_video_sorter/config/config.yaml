@@ -11,3 +11,9 @@ output_dirs:
 # Files to ignore in input folder
 ignore:
   - ".stversions"
+
+# Advance Options
+# Custom script that will run before the program starts, great for mounting a
+# network drive if your output or inout folders are located
+before_scripts:
+valid_list: "7m_video_sorter/config/valid_list"
