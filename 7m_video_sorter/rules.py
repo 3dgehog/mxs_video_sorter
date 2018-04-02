@@ -4,7 +4,7 @@ def before_matching(config, match, fse):
         rules = config.rule_book[match['title']]
 
         if 'alt_name_merge' in rules:
-            fse.title = match['title'] + ' - ' + match['alternative_title']
+            fse.vfile.title = match['title'] + ' - ' + match['alternative_title']
     return fse
 
 

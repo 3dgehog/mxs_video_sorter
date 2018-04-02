@@ -19,24 +19,24 @@ def matcher(config, search_queue, match_queue):
 
 		fse = search_queue.get()
 
-		match = guessit.guessit(fse.vfile)
-		fse.title = match['title']
+		match = guessit.guessit(fse.vfile.filename)
+		fse.vfile.title = match['title']
 
 		fse = rules.before_matching(config, match, fse)
 
-		logger.debug('---' + fse.title + '---')
+		logger.debug('---' + fse.vfile.title + '---')
 
-		if not fse.title.upper() in config.valid_list:
+		if not fse.vfile.title.upper() in config.valid_list:
 			logger.debug('***NOT IN LIST***')
 			if not config.args.review:
 				continue
 
-		diffmatch = difflib.get_close_matches(fse.title, output_index.keys(), n=1)
+		diffmatch = difflib.get_close_matches(fse.vfile.title, output_index.keys(), n=1)
 		if not diffmatch:
 			logger.debug("***NO MATCH***")
 			continue
 
-		logger.debug(fse.title + " >>> " + diffmatch[0])
+		logger.debug(fse.vfile.title + " >>> " + diffmatch[0])
 	logger.info("Matcher Done")
 
 

@@ -2,19 +2,23 @@ import os
 
 
 class FileSystemEntry:
+    """
+    The Object that takes care of the File System Entry in the Input Folder
+    - path_to_fse: abspath path to fse
+    """
     def __init__(self, config, fse):
         self.config = config
         self.path_to_fse = os.path.join(config.input_dir, fse)
         self.fse = fse
-        self.dirname = config.input_dir
+        self.vfile = VideoFile()
         self.get_info()
 
     def get_info(self):
-        """Attributes are:
-        - valid (if its a valid file)
-        - isdir (if its a directory)
-        - vfile (video files)
-        - path_to_vfile (abs path to video file)
+        """
+        - valid: True if its a valid file)
+        - isdir: True if its a directory
+        - vfile.filename: video filename
+        - vfile.abspath: abspath to video file
         """
         self.valid = False
         self.isdir = os.path.isdir(self.path_to_fse)
@@ -32,13 +36,17 @@ class FileSystemEntry:
                     if self.valid:
                         self.valid = False
                         break
-                    self.vfile = item
-                    self.path_to_vfile = os.path.join(self.path_to_fse, item)
+                    self.vfile.filename = item
+                    self.vfile.abspath = os.path.join(self.path_to_fse, item)
                     self.valid = True
 
         else:
             # check if the file found has a valid file extension
             if self.config.re_compile_file_extension.match(self.fse):
-                self.vfile = self.fse
-                self.path_to_vfile = self.path_to_fse
+                self.vfile.filename = self.fse
+                self.vfile.abspath = self.path_to_fse
                 self.valid = True
+
+
+class VideoFile:
+    pass
