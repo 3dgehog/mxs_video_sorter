@@ -1,0 +1,26 @@
+# This is the main config file for 7m_video_sorter
+
+# The directory it will search for the videos to sort
+# Example
+# input_dir: "path/to/input/dir"
+input_dir:
+
+# list of directories it will copy the videos to
+# Example.
+# output_dirs:
+  # - path/to/dir/1
+output_dirs:
+
+# list of folders to ignore in input folder
+# Example
+# ignore:
+  # - ".stversions"
+ignore:
+
+# Advanced Options
+
+# list of scripts to run before starting
+# Example:
+# before_scripts:
+  # - "path/to/script"
+before_scripts:

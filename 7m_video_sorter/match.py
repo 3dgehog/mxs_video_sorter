@@ -9,6 +9,7 @@ logger = logging.getLogger('main')
 
 
 def matcher(config, search_queue, match_queue):
+	logging.debug("Matcher Running")
 	output_index = _index_output_dirs(config)
 	# search_queue.qsize()
 	while True:
@@ -34,6 +35,7 @@ def matcher(config, search_queue, match_queue):
 			continue
 
 		logger.info(match['title'] + " >>> " + diffmatch[0])
+	logging.info("Matcher Done")
 
 
 def _index_output_dirs(config):

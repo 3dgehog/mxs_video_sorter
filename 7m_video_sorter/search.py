@@ -6,6 +6,7 @@ logger = logging.getLogger('main')
 
 
 def searcher(config, search_queue):
+    logger.debug("Searcher Running")
     for item in os.listdir(config.input_dir):
 
         # Ignore config ignore files
@@ -18,7 +19,7 @@ def searcher(config, search_queue):
 
         # Add FSE to queue is its valid
         if fse.valid:
-            logger.debug("fse '{}' >>> search queue".format(item))
+            logger.debug("fse '{}' added".format(item))
             search_queue.put(fse)
 
     logger.info("Searcher Done")
