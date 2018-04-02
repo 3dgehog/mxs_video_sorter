@@ -10,8 +10,8 @@ logger = logging.getLogger('main')
 class ConfigManager:
     """A controller to access all the configs from the config files.
     - input_dir : Input Directory
-    - output_dir : Output Directory
-    - ignore : List of File System Entries to out right ignore"""
+    - output_dir : [Output Directories]
+    - ignore : List of File System Entries to ignore"""
     def __init__(self):
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                   "config.yaml"), 'r') as ymlfile:

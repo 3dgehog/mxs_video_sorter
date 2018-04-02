@@ -8,7 +8,7 @@ import rules
 logger = logging.getLogger('main')
 
 
-def match(config, search_queue, match_queue):
+def matcher(config, search_queue, match_queue):
 	output_index = _index_output_dirs(config)
 	while True:
 		fse = search_queue.get()
@@ -18,16 +18,19 @@ def match(config, search_queue, match_queue):
 			break
 
 		match = guessit.guessit(fse.vfile)
-		match, valid = rules.before_matching(fse, match, config)
 		logger.info('---' + match['title'] + '---')
-		if not valid:
+
+		if not match['title'].upper() in config.valid_list:
 			logger.info('--- Not in List ---')
 			continue
+
+		match = rules.before_matching(config, match, fse)
+
 		diffmatch = difflib.get_close_matches(match['title'], output_index.keys(), n=1)
 		if diffmatch:
 			logger.info(match['title'] + " >>> " + diffmatch[0])
 		else:
-			logger.info("### NO MATCH ###")
+			logger.info("--- NO MATCH ---")
 
 
 def _index_output_dirs(config):

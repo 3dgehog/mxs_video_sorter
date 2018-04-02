@@ -6,7 +6,7 @@ from file_system_entry import FileSystemEntry
 logger = logging.getLogger('main')
 
 
-def search(config, search_queue):
+def searcher(config, search_queue):
     for item in os.listdir(config.input_dir):
 
         # Ignore config ignore files
@@ -24,4 +24,4 @@ def search(config, search_queue):
 
     # Send 'end' signal
     search_queue.put("end")
-    logger.info("Search Done")
+    logger.info("Searcher Done")

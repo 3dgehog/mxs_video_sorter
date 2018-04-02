@@ -7,9 +7,16 @@ import config.config_manager as config
 import logging
 import logging.config
 import yaml
+import argparse
 
 import search
 import match
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-r", "--review",
+                    help="Runs through all files in output dir for review, doesn't transfer anything",
+                    action="store_true")
+args = parser.parse_args()
 
 # load logging configs
 with open('7m_video_sorter/config/logging.yaml', 'r') as ymlfile:
@@ -22,12 +29,16 @@ logger.setLevel(10)
 
 
 config = config.ConfigManager()
+config.args = args
 
 match_queue = queue.Queue()
 search_queue = queue.Queue()
 
 
-search.search(config, search_queue)
-match.match(config, search_queue, match_queue)
+search.searcher(config, search_queue)
+match.matcher(config, search_queue, match_queue)
 
-logger.info("App done")
+if args.review:
+    logger.info("Review done")
+else:
+    logger.info("App done")
