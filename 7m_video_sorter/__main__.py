@@ -32,6 +32,8 @@ logger = logging.getLogger('main')
 logging.addLevelName(15, "REVIEW")
 logger.setLevel(10)
 
+if args.review:
+    logger.setLevel(15)
 
 config = config.ConfigManager()
 config.args = args

@@ -17,7 +17,7 @@ def before_index_match(config, fse):
 
 def valid_title(config, fse):
 	if not difflib.get_close_matches(fse.vfile.title, config.rule_book.options('rules'), n=1, cutoff=DIFF_CUTOFF):
-		logger.info('NOT IN LIST')
+		logger.warning('NOT IN LIST')
 		if config.args.review:
 			return True
 		return False
@@ -34,12 +34,12 @@ def transfer_rules(config, fse):
 			rules = rules.split(' ')
 			fse = rule_commands(fse, rules)
 	else:
-		logging.log(15, "rule None")
+		logger.log(15, "rule None")
 	return fse
 
 
 def rule_commands(fse, rules):
-	logging.debug("rules = {}".format(rules))
+	logger.debug("rules = {}".format(rules))
 	invalid_rule_patterns(rules)
 	if 'episode-only' in rules:
 		try:

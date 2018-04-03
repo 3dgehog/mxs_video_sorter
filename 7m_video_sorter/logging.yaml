@@ -4,10 +4,26 @@ formatters:
   default:
     format: '%(levelname)s: %(message)s'
 
+  colored:
+    (): 'colorlog.ColoredFormatter'
+    format: '%(log_color)s%(levelname)s:%(reset)s%(message_log_color)s%(message)s'
+    log_colors:
+      REVIEW: green
+      DEBUG: cyan
+      INFO: green
+      WARNING: yellow
+      ERROR: red
+      CRITICAL: red,bg_white
+    secondary_log_colors:
+      message:
+        WARNING: yellow
+        ERROR: red
+        CRITICAL: red
+
 handlers:
   console:
     class: logging.StreamHandler
-    formatter: default
+    formatter: colored
 
 loggers:
   main:

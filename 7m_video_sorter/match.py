@@ -36,7 +36,7 @@ def matcher(config, search_queue, match_queue):
 			fse.vfile.title, output_index.keys(), n=1, cutoff=0.6)
 
 		if not index_diffmatch:
-			logger.info("NO MATCH")
+			logger.warning("NO MATCH")
 			continue
 		else:
 			fse.matched_dirpath = output_index[index_diffmatch[0]]['path']
