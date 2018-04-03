@@ -18,11 +18,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--review",
                     help="Runs through all files in output dir for review, doesn't transfer anything",
                     action="store_true")
-parser.add_argument("-c", "--create_dir",
+parser.add_argument("-c", "--create-dir",
                     help="Creates Season # dir if it doesn't exists",
                     action="store_true")
 parser.add_argument("-d", "--debug",
                     help="Run all debug logs",
+                    action="store_true")
+parser.add_argument("-p", "--prevent-delete",
+                    help="Doesn't delete file after being transfered",
                     action="store_true")
 args = parser.parse_args()
 
@@ -45,6 +48,7 @@ if args.debug:
 
 config = config.ConfigManager()
 config.args = args
+logger.debug("args passed: {}".format(args))
 
 # print(config.rule_book)
 # raise

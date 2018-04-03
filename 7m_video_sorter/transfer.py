@@ -42,6 +42,8 @@ def copy(config, fse):
 	if not os.path.exists(os.path.join(fse.transfer_to, fse.vfile.filename)):
 		logger.critical("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
 		raise Exception("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
+	if config.args.prevent_delete:
+		return
 	if fse.isdir:
 		shutil.rmtree(fse.path_to_fse)
 	else:
