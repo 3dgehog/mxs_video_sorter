@@ -13,28 +13,44 @@ def matcher(config, search_queue, match_queue):
 	output_index = _index_output_dirs(config)
 	# search_queue.qsize()
 	while True:
+		if config.args.review:
+			print('')
 		if search_queue.qsize() == 0:
 			logger.debug("end of search queue")
 			break
 
 		fse = search_queue.get()
 
-		match = guessit.guessit(fse.vfile.filename)
-		fse.vfile.title = match['title']
+		gtmatch = guessit.guessit(fse.vfile.filename)
+		fse.gtmatch = gtmatch
+		fse.vfile.title = gtmatch['title']
 
-		fse = rules.before_matching(config, match, fse)
+		fse = rules.before_index_match(config, fse)
 
-		logger.debug('---' + fse.vfile.title + '---')
+		logger.info('---' + fse.vfile.title + '---')
 
-		if not rules.valid_title(config, match, fse):
+		if not rules.valid_title(config, fse):
 			continue
 
-		diffmatch = difflib.get_close_matches(fse.vfile.title, output_index.keys(), n=1)
-		if not diffmatch:
-			logger.debug("***NO MATCH***")
+		index_diffmatch = difflib.get_close_matches(
+			fse.vfile.title, output_index.keys(), n=1, cutoff=0.6)
+
+		if not index_diffmatch:
+			logger.info("NO MATCH")
+			continue
+		else:
+			fse.matched_dirpath = output_index[index_diffmatch[0]]['path']
+			fse.matched_dirname = index_diffmatch[0]
+			fse.matched_subdirs = output_index[index_diffmatch[0]]['subdirs']
+
+		fse = rules.transfer_rules(config, fse)
+
+		if not fse.transfer_to:
+			logging.warn("transfer_to = '{}'".format(fse.transfer_to))
 			continue
 
-		logger.debug(fse.vfile.title + " >>> " + diffmatch[0])
+		logging.log(15, "transfer_to = '{}'".format(fse.transfer_to))
+		logger.info("MATCHED")
 	logger.info("Matcher Done")
 
 
@@ -63,12 +79,12 @@ def _index_output_dirs(config):
 			path = tempdict[folder]['path']
 
 			# list though current dir to get subdir
-			tempdict[folder]['subdir'] = []
+			tempdict[folder]['subdirs'] = []
 			for subfolder in os.listdir(path):
 				if not os.path.isdir(os.path.join(path, subfolder)):
 					continue
 
 				# Adds to subdir
-				tempdict[folder]['subdir'].append(subfolder)
+				tempdict[folder]['subdirs'].append(subfolder)
 
 	return tempdict

@@ -29,6 +29,7 @@ logging.config.dictConfig(yamlconfig)
 
 # Logging
 logger = logging.getLogger('main')
+logging.addLevelName(15, "REVIEW")
 logger.setLevel(10)
 
 
