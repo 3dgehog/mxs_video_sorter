@@ -1,8 +1,0 @@
-# The rule book for the 7m_video_sorter
-# Example
-# Title:
-#   - alt_name_merge
-
-
-# Options
-# - alt_name_merge: merges title and alternative title from guessit MatchDict with a '-'

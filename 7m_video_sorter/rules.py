@@ -1,13 +1,23 @@
+import logging
+
+logger = logging.getLogger('main')
+
+
 # Before Matching
 def before_matching(config, match, fse):
-    if match['title'] in config.rule_book.keys():
-        rules = config.rule_book[match['title']]
+	return fse
 
-        if 'alt_name_merge' in rules:
-            fse.vfile.title = match['title'] + ' - ' + match['alternative_title']
-    return fse
+
+def valid_title(config, match, fse):
+	for title in config.rule_book.options('title'):
+		if fse.vfile.title.upper() != title.upper():
+			logger.debug('***NOT IN LIST***')
+			if config.args.review:
+				break
+			return False
+	return True
 
 
 # Before Transfering
 def before_transfering():
-    pass
+	pass

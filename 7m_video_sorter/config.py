@@ -4,6 +4,7 @@ import logging
 import re
 import subprocess
 import shutil
+import configparser
 
 logger = logging.getLogger('main')
 
@@ -23,14 +24,23 @@ class ConfigManager:
         self._verify_get_output_dir()
         self.ignore = self.yamlconfig["ignore"]
         self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
-        self._get_valid_list()
+        # self._get_valid_list()
         self._get_rule_book()
 
     video_extension_list = ['mkv', 'm4v', 'avi', 'mp4']
 
     def _get_rule_book(self):
-        with open(os.path.join(self.config_dir, "rule_book.yaml"), 'r') as ymlfile:
-            self.rule_book = yaml.load(ymlfile)
+        config = configparser.ConfigParser(allow_no_value=True)
+        config.read(os.path.join(self.config_dir + 'rule_book.conf'))
+        self.rule_book = config
+
+        # print("List all contents")
+        # for section in config.sections():
+        #     print("Section: %s" % section)
+        #     for options in config.options(section):
+        #         print("x %s:::%s:::%s" % (options,
+        #                                   config.get(section, options),
+        #                                   str(type(options))))
 
     def _get_yamlconfig(self):
         with open(os.path.join(self.config_dir, "config.yaml"), 'r') as ymlfile:
@@ -49,20 +59,20 @@ class ConfigManager:
                 shutil.copyfile(os.path.join("7m_video_sorter/.conf", file),
                                 os.path.join(self.config_dir, file))
 
-    def _get_valid_list(self):
-        """Gets valid_list and turns it into python list"""
-        default_path_to_vlist = os.path.join(os.environ['HOME'],
-                                             '.config/7m_video_sorter/valid_list')
-        # makes folder and file if it doesn't exists
-        if not os.path.exists(os.path.dirname(default_path_to_vlist)):
-            os.makedirs(os.path.dirname(default_path_to_vlist))
-            os.system('touch ' + default_path_to_vlist)
-        # checks if config is not default
-        with open(default_path_to_vlist) as f:
-            content = f.readlines()
-        content = [x.strip() for x in content]
-        content = [x.upper() for x in content]
-        self.valid_list = content
+    # def _get_valid_list(self):
+    #     """Gets valid_list and turns it into python list"""
+    #     default_path_to_vlist = os.path.join(os.environ['HOME'],
+    #                                          '.config/7m_video_sorter/valid_list')
+    #     # makes folder and file if it doesn't exists
+    #     if not os.path.exists(os.path.dirname(default_path_to_vlist)):
+    #         os.makedirs(os.path.dirname(default_path_to_vlist))
+    #         os.system('touch ' + default_path_to_vlist)
+    #     # checks if config is not default
+    #     with open(default_path_to_vlist) as f:
+    #         content = f.readlines()
+    #     content = [x.strip() for x in content]
+    #     content = [x.upper() for x in content]
+    #     self.valid_list = content
 
     def _verify_get_output_dir(self):
         dirs = []

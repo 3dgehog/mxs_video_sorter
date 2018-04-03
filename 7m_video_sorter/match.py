@@ -26,10 +26,8 @@ def matcher(config, search_queue, match_queue):
 
 		logger.debug('---' + fse.vfile.title + '---')
 
-		if not fse.vfile.title.upper() in config.valid_list:
-			logger.debug('***NOT IN LIST***')
-			if not config.args.review:
-				continue
+		if not rules.valid_title(config, match, fse):
+			continue
 
 		diffmatch = difflib.get_close_matches(fse.vfile.title, output_index.keys(), n=1)
 		if not diffmatch:
