@@ -12,6 +12,7 @@ import progressbar
 
 import search
 import match
+import transfer
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--review",
@@ -47,6 +48,7 @@ search_queue = queue.Queue()
 
 search.searcher(config, search_queue)
 match.matcher(config, search_queue, match_queue)
+transfer.transferer(config, match_queue)
 
 if args.review:
     logger.info("Review done")

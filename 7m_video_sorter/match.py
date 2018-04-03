@@ -51,6 +51,12 @@ def matcher(config, search_queue, match_queue):
 
 		logging.log(15, "transfer_to = '{}'".format(fse.transfer_to))
 		logger.info("MATCHED")
+
+		if config.args.review:
+			continue
+
+		logger.debug("fse '{}' added".format(fse.vfile.title))
+		match_queue.put(fse)
 	logger.info("Matcher Done")
 
 
