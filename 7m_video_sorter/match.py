@@ -27,6 +27,7 @@ def matcher(config, search_queue, match_queue):
 		fse = rules.before_index_match(config, fse)
 
 		logger.info('---' + fse.vfile.title + '---')
+		logger.log(15, "{}".format(fse.vfile.filename))
 
 		if not rules.valid_title(config, fse):
 			continue
@@ -43,6 +44,8 @@ def matcher(config, search_queue, match_queue):
 			fse.matched_subdirs = output_index[index_diffmatch[0]]['subdirs']
 
 		fse = rules.transfer_rules(config, fse, output_index)
+		
+		logger.log(15, "{}".format(fse.gtmatch))
 
 		if not fse.transfer_to:
 			logging.warn("transfer_to = '{}'".format(fse.transfer_to))

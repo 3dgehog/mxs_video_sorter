@@ -45,6 +45,7 @@ def rule_commands(config, fse, rules, output_index):
 		try:
 			fse.gtmatch['episode'] = int(str(fse.gtmatch['season']) + str(fse.gtmatch['episode']))
 		except KeyError:
+			logger.debug("error episode-only merging, missing season key")
 			pass
 		fse.gtmatch.pop('season', None)
 		logger.log(15, "rule 'episode-only' OK")
