@@ -18,6 +18,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--review",
                     help="Runs through all files in output dir for review, doesn't transfer anything",
                     action="store_true")
+parser.add_argument("-c", "--create_dir",
+                    help="Creates Season # dir if it doesn't exists",
+                    action="store_true")
+parser.add_argument("-d", "--debug",
+                    help="Run all debug logs",
+                    action="store_true")
 args = parser.parse_args()
 
 # fix logging with progressbar
@@ -31,10 +37,11 @@ logging.config.dictConfig(yamlconfig)
 # Logging
 logger = logging.getLogger('main')
 logging.addLevelName(15, "REVIEW")
-logger.setLevel(10)
 
 if args.review:
     logger.setLevel(15)
+if args.debug:
+    logger.setLevel(10)
 
 config = config.ConfigManager()
 config.args = args
@@ -47,8 +54,11 @@ search_queue = queue.Queue()
 
 
 search.searcher(config, search_queue)
-match.matcher(config, search_queue, match_queue)
-transfer.transferer(config, match_queue)
+if not search_queue.qsize() == 0:
+    match.matcher(config, search_queue, match_queue)
+    transfer.transferer(config, match_queue)
+else:
+    logger.info("No File System Entry detected")
 
 if args.review:
     logger.info("Review done")

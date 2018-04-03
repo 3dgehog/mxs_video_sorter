@@ -13,8 +13,7 @@ def matcher(config, search_queue, match_queue):
 	output_index = _index_output_dirs(config)
 	# search_queue.qsize()
 	while True:
-		if config.args.review:
-			print('')
+		print('')
 		if search_queue.qsize() == 0:
 			logger.debug("end of search queue")
 			break
@@ -43,7 +42,7 @@ def matcher(config, search_queue, match_queue):
 			fse.matched_dirname = index_diffmatch[0]
 			fse.matched_subdirs = output_index[index_diffmatch[0]]['subdirs']
 
-		fse = rules.transfer_rules(config, fse)
+		fse = rules.transfer_rules(config, fse, output_index)
 
 		if not fse.transfer_to:
 			logging.warn("transfer_to = '{}'".format(fse.transfer_to))

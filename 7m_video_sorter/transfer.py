@@ -3,20 +3,20 @@ import progressbar
 import shutil
 import time
 import threading
+import os
 
 logger = logging.getLogger('main')
 
 
 def transferer(config, match_queue):
+	if config.args.review:
+		return
 	bar = pbar(match_queue.qsize())
 	global counter
 	counter = 0
-	_pbar_thread = threading.Thread(target=pbar_run, args=(bar,), daemon=True)
+	_pbar_thread = threading.Thread(target=_pbar_run, args=(bar,), daemon=True)
 	_pbar_thread.start()
 	while True:
-		if config.args.review:
-			break
-
 		if match_queue.qsize() == 0:
 			bar.finish()
 			logger.debug("end of match queue")
@@ -28,12 +28,25 @@ def transferer(config, match_queue):
 		# Update ProgressBar
 		counter += 1
 
-		time.sleep(0.5)
+		copy(config, fse)
 
 		bar.update(counter)
+		logging.debug("copied to: '{}'".format(fse.transfer_to))
 		logging.info("Copy Successful")
 
 	logger.info("Transferer Done")
+
+
+def copy(config, fse):
+	shutil.copy(fse.vfile.abspath, fse.transfer_to)
+	if not os.path.exists(os.path.join(fse.transfer_to, fse.vfile.filename)):
+		logger.critical("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
+		raise Exception("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
+	if fse.isdir:
+		shutil.rmtree(fse.path_to_fse)
+	else:
+		os.remove(fse.path_to_fse)
+	logging.debug("fse removed")
 
 
 def pbar(full_queue_size):
@@ -50,7 +63,7 @@ def pbar(full_queue_size):
 	return progressbar.ProgressBar(widgets=widgets, max_value=full_queue_size)
 
 
-def pbar_run(bar):
+def _pbar_run(bar):
 	while True:
 		bar.update(counter)
 		time.sleep(2)

@@ -25,20 +25,20 @@ def valid_title(config, fse):
 
 
 # Before Transfering
-def transfer_rules(config, fse):
+def transfer_rules(config, fse, output_index):
 	fse.transfer_to = None
 	diffmatch = difflib.get_close_matches(fse.vfile.title, config.rule_book.options('rules'), n=1, cutoff=DIFF_CUTOFF)
 	if diffmatch:
 		rules = config.rule_book.get('rules', diffmatch[0])
 		if rules:
 			rules = rules.split(' ')
-			fse = rule_commands(fse, rules)
+			fse = rule_commands(config, fse, rules, output_index)
 	else:
 		logger.log(15, "rule None")
 	return fse
 
 
-def rule_commands(fse, rules):
+def rule_commands(config, fse, rules, output_index):
 	logger.debug("rules = {}".format(rules))
 	invalid_rule_patterns(rules)
 	if 'episode-only' in rules:
@@ -71,8 +71,15 @@ def rule_commands(fse, rules):
 				if search:
 					fse.transfer_to = os.path.join(fse.matched_dirpath, subdir)
 					logger.log(15, "rule 'season' OK")
-			if not fse.transfer_to:
+			if not fse.transfer_to and not config.args.create_dir:
 				logger.warning("rule 'season' WARN > Couldn't find Season {} folder".format(season))
+			elif not fse.transfer_to and config.args.create_dir:
+				path_to_new_dir = os.path.join(fse.matched_dirpath, "Season {}".format(season))
+				os.mkdir(path_to_new_dir)
+				output_index[fse.matched_dirname]["subdirs"].append(os.path.basename(path_to_new_dir))
+				logger.info("Created directory: '{}' ".format(path_to_new_dir))
+				fse.transfer_to = path_to_new_dir
+				logger.log(15, "rule 'season' OK")
 	return fse
 
 
