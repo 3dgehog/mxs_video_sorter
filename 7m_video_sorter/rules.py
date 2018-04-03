@@ -71,12 +71,18 @@ def rule_commands(fse, rules):
 				if search:
 					fse.transfer_to = os.path.join(fse.matched_dirpath, subdir)
 					logger.log(15, "rule 'season' OK")
-			if not search:
+			if not fse.transfer_to:
 				logger.warning("rule 'season' WARN > Couldn't find Season {} folder".format(season))
 	return fse
 
 
 def invalid_rule_patterns(rules):
+	available_rules = ['parent-dir', 'subdir-only', 'parent-dir', 'season', 'episode-only']
+	for rule in rules:
+		if rule not in available_rules:
+			if rules[rules.index(rule) - 1] != 'subdir-only':
+				raise KeyError("Invalid rule : '{}'".format(rule))
+
 	invalid_matches = [
 		['subdir-only', 'parent-dir'],
 		['season', 'subdir-only'],
