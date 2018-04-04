@@ -17,7 +17,7 @@ class FileSystemEntry:
         self.vfile = VideoFile()
         self.vfile.filename = None
         self.vfile.abspath = None
-        self.vfile.gtmatch = None
+        self.vfile.guessitmatch = None
         self.valid = False
         self.isdir = os.path.isdir(self.path_to_fse)
         self.get_info()

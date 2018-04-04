@@ -21,16 +21,16 @@ def matcher(config, search_queue, match_queue):
 
 		fse = search_queue.get()
 
-		gtmatch = guessit.guessit(fse.vfile.filename)
-		fse.vfile.gtmatch = gtmatch
-		fse.vfile.title = gtmatch['title']
+		guessitmatch = guessit.guessit(fse.vfile.filename)
+		fse.vfile.guessitmatch = guessitmatch
+		fse.vfile.title = guessitmatch['title']
 
-		if fse.vfile.gtmatch['type'] == 'episode':
+		if fse.vfile.guessitmatch['type'] == 'episode':
 			series_matcher(config, fse, series_dirs_index)
 			if not fse.valid:
 				continue
 
-		logger.log(15, "{}".format(fse.vfile.gtmatch))
+		logger.log(15, "{}".format(fse.vfile.guessitmatch))
 
 		if not fse.transfer_to:
 			logger.warn("No folder to transfer to")

@@ -5,7 +5,7 @@ import re
 
 logger = logging.getLogger('main')
 
-available_rules = [
+valid_series_rules = [
 	'parent-dir',
 	'subdir-only',
 	'parent-dir',
@@ -28,7 +28,7 @@ def get_series_rules(config, fse):
 			rules = config.rule_book.get('series_rules', regexmatch[0])
 		if rules:
 			rules = rules.split(' ')
-			invalid_rule_patterns(rules)
+			_invalid_series_rule_check(rules)
 			fse.rules = rules
 		else:
 			logger.warning("No rules set")
@@ -40,15 +40,15 @@ def series_matching_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'alt-title' in fse.rules:
-		if 'alternative_title' in fse.vfile.gtmatch:
+		if 'alternative_title' in fse.vfile.guessitmatch:
 			try:
 				separator = fse.rules[fse.rules.index('alt-title') + 1].replace(":", " ")
 			except IndexError:
 				raise KeyError("Missing separator for alt-title")
-			if separator in available_rules:
+			if separator in valid_series_rules:
 				raise KeyError("Missing separator for alt-title")
 			fse.vfile.title = \
-				fse.vfile.gtmatch['title'] + separator + fse.vfile.gtmatch['alternative_title']
+				fse.vfile.guessitmatch['title'] + separator + fse.vfile.guessitmatch['alternative_title']
 			logger.log(15, "rule 'alt-title' OK")
 		else:
 			logger.warning("rule 'alt-title' WARN, no alternative_title key found")
@@ -69,11 +69,11 @@ def series_transfer_rules(config, fse, series_dirs_index):
 		return
 	if 'episode-only' in fse.rules:
 		try:
-			fse.vfile.gtmatch['episode'] = int(str(fse.vfile.gtmatch['season']) + str(fse.vfile.gtmatch['episode']))
+			fse.vfile.guessitmatch['episode'] = int(str(fse.vfile.guessitmatch['season']) + str(fse.vfile.guessitmatch['episode']))
 		except KeyError:
 			logger.debug("error episode-only merging, missing season key")
 			pass
-		fse.vfile.gtmatch.pop('season', None)
+		fse.vfile.guessitmatch.pop('season', None)
 		logger.log(15, "rule 'episode-only' OK")
 
 	if 'parent-dir' in fse.rules:
@@ -90,10 +90,10 @@ def series_transfer_rules(config, fse, series_dirs_index):
 			logger.log(15, "rule 'subdir-only' OK")
 
 	if 'season' in fse.rules:
-		if 'season' not in fse.vfile.gtmatch:
+		if 'season' not in fse.vfile.guessitmatch:
 			logger.warning("rule 'season' WARN > Couldn't find Season from filename")
 		else:
-			season = str(fse.vfile.gtmatch['season'])
+			season = str(fse.vfile.guessitmatch['season'])
 			for subdir in fse.matched_subdirs:
 				search = re.search("^Season {}".format(season), subdir, re.IGNORECASE)
 				if search:
@@ -110,20 +110,20 @@ def series_transfer_rules(config, fse, series_dirs_index):
 				logger.log(15, "rule 'season' OK")
 
 
-def invalid_rule_patterns(rules):
+def _invalid_series_rule_check(rules):
 	for rule in rules:
-		if rule not in available_rules:
+		if rule not in valid_series_rules:
 			if not rules[rules.index(rule) - 1] != 'subdir-only':
 				continue
 			if not rules[rules.index(rule) - 1] != 'alt-title':
 				continue
-			raise KeyError("Invalid rule : '{}'".format(rule))
+			raise KeyError("Invalid series rule: '{}'".format(rule))
 
-	invalid_matches = [
+	invalid_series_rule_pairs = [
 		['subdir-only', 'parent-dir'],
 		['season', 'subdir-only'],
 		['season', 'parent-dir']
 	]
-	for invalid_match in invalid_matches:
-		if all(item in rules for item in invalid_match):
+	for invalid_pair in invalid_series_rule_pairs:
+		if all(item in rules for item in invalid_pair):
 			raise KeyError("Invalid rule pairing: {}".format(rules))
