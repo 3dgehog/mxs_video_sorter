@@ -14,6 +14,7 @@ import search
 import match
 import transfer
 
+# Arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--transfer",
                     help="Pass this argument to make the transfer",
@@ -32,7 +33,7 @@ parser.add_argument("-p", "--prevent-delete",
                     action="store_true")
 args = parser.parse_args()
 
-# fix logging with progressbar
+# fix progressbar with logging
 progressbar.streams.wrap_stderr()
 
 # load logging configs
@@ -49,14 +50,16 @@ if args.review:
 if args.debug:
     logger.setLevel(10)
 
+# Configs
 config = config.ConfigManager()
 config.args = args
 logger.debug("args passed: {}".format(args))
 
+# Queues
 match_queue = queue.Queue()
 search_queue = queue.Queue()
 
-
+# Searcher, Matcher, Trasnferer
 search.searcher(config, search_queue)
 if not search_queue.qsize() == 0:
     match.matcher(config, search_queue, match_queue)

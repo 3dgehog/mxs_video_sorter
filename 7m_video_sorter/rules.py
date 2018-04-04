@@ -17,8 +17,7 @@ available_rules = [
 DIFF_CUTOFF = 0.7
 
 
-def get_rules(config, fse):
-	fse.rules = None
+def get_series_rules(config, fse):
 	diffmatch = difflib.get_close_matches(fse.vfile.title, config.rule_book.options('series_rules'), n=1, cutoff=DIFF_CUTOFF)
 	regex_compile = re.compile("{}".format(fse.vfile.title), re.IGNORECASE)
 	regexmatch = list(filter(regex_compile.match, config.rule_book.options('series_rules')))
@@ -32,17 +31,16 @@ def get_rules(config, fse):
 			invalid_rule_patterns(rules)
 			fse.rules = rules
 		else:
-			fse.rules = None
 			logger.warning("No rules set")
 	logger.debug("rules = {}".format(fse.rules))
 
 
 # Before Matching
-def matching_rules(config, fse):
+def series_matching_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'alt-title' in fse.rules:
-		if 'alternative_title' in fse.gtmatch:  # REVIEW: Nonetype error
+		if 'alternative_title' in fse.vfile.gtmatch:
 			try:
 				separator = fse.rules[fse.rules.index('alt-title') + 1].replace(":", " ")
 			except IndexError:
@@ -50,13 +48,13 @@ def matching_rules(config, fse):
 			if separator in available_rules:
 				raise KeyError("Missing separator for alt-title")
 			fse.vfile.title = \
-				fse.gtmatch['title'] + separator + fse.gtmatch['alternative_title']
+				fse.vfile.gtmatch['title'] + separator + fse.vfile.gtmatch['alternative_title']
 			logger.log(15, "rule 'alt-title' OK")
 		else:
 			logger.warning("rule 'alt-title' WARN, no alternative_title key found")
 
 
-def valid_title(config, fse):
+def series_valid_title(config, fse):
 	if not difflib.get_close_matches(fse.vfile.title, config.rule_book.options('series_rules'), n=1, cutoff=DIFF_CUTOFF):
 		logger.warning('NOT IN LIST')
 		if config.args.review:
@@ -66,21 +64,16 @@ def valid_title(config, fse):
 
 
 # Before Transfering
-def transfer_rules(config, fse, output_index):
-	fse.transfer_to = None
-	fse = rule_commands(config, fse, output_index)
-
-
-def rule_commands(config, fse, output_index):
+def series_transfer_rules(config, fse, series_dirs_index):
 	if not fse.rules:
 		return
 	if 'episode-only' in fse.rules:
 		try:
-			fse.gtmatch['episode'] = int(str(fse.gtmatch['season']) + str(fse.gtmatch['episode']))
+			fse.vfile.gtmatch['episode'] = int(str(fse.vfile.gtmatch['season']) + str(fse.vfile.gtmatch['episode']))
 		except KeyError:
 			logger.debug("error episode-only merging, missing season key")
 			pass
-		fse.gtmatch.pop('season', None)
+		fse.vfile.gtmatch.pop('season', None)
 		logger.log(15, "rule 'episode-only' OK")
 
 	if 'parent-dir' in fse.rules:
@@ -97,10 +90,10 @@ def rule_commands(config, fse, output_index):
 			logger.log(15, "rule 'subdir-only' OK")
 
 	if 'season' in fse.rules:
-		if 'season' not in fse.gtmatch:
+		if 'season' not in fse.vfile.gtmatch:
 			logger.warning("rule 'season' WARN > Couldn't find Season from filename")
 		else:
-			season = str(fse.gtmatch['season'])
+			season = str(fse.vfile.gtmatch['season'])
 			for subdir in fse.matched_subdirs:
 				search = re.search("^Season {}".format(season), subdir, re.IGNORECASE)
 				if search:
@@ -111,7 +104,7 @@ def rule_commands(config, fse, output_index):
 			elif not fse.transfer_to and config.args.create_dir:
 				path_to_new_dir = os.path.join(fse.matched_dirpath, "Season {}".format(season))
 				os.mkdir(path_to_new_dir)
-				output_index[fse.matched_dirname]["subdirs"].append(os.path.basename(path_to_new_dir))
+				series_dirs_index[fse.matched_dirname]["subdirs"].append(os.path.basename(path_to_new_dir))
 				logger.info("Created directory: '{}' ".format(path_to_new_dir))
 				fse.transfer_to = path_to_new_dir
 				logger.log(15, "rule 'season' OK")

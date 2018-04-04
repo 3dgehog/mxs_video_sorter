@@ -12,16 +12,17 @@ logger = logging.getLogger('main')
 class ConfigManager:
     """A controller to access all the configs from the config files.
     - input_dir : Input Directory
-    - output_dirs : [Output Directories]
+    - series_dirs : [Series Directories]
     - ignore : List of File System Entries to ignore
-    - valid_list: List of all valid shows from valid_list"""
+    - rule_book : The rulebook to organize series
+    """
     def __init__(self):
         self.config_dir = os.path.join(os.environ['HOME'], '.config/7m_video_sorter/')
         self._verify_config_dir()
         self._get_yamlconfig()
         self._run_before_scripts()
         self._verify_get_input_dir()
-        self._verify_get_output_dir()
+        self._verify_get_series_dirs()
         self.ignore = self.yamlconfig["ignore"]
         self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
         self._get_rule_book()
@@ -49,16 +50,16 @@ class ConfigManager:
                 shutil.copyfile(os.path.join("7m_video_sorter/.conf", file),
                                 os.path.join(self.config_dir, file))
 
-    def _verify_get_output_dir(self):
+    def _verify_get_series_dirs(self):
         dirs = []
-        for dir in self.yamlconfig["output_dirs"]:
+        for dir in self.yamlconfig["series_dirs"]:
             if not dir:
-                raise ValueError("Couldn't find output directories from config.yaml")
+                raise ValueError("Couldn't find series directories from config.yaml")
             if not os.path.exists(dir):
-                raise ValueError("Output Directory '{}' doesn't exists".format(dirs))
+                raise ValueError("Series Directory '{}' doesn't exists".format(dirs))
             dirs.append(dir)
-        logger.debug("got output dirs '{}'".format(dirs))
-        self.output_dirs = dirs
+        logger.debug("got series dirs '{}'".format(dirs))
+        self.series_dirs = dirs
 
     def _verify_get_input_dir(self):
         """Returns input_dir from the config.yaml file"""

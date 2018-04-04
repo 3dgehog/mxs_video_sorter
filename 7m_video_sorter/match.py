@@ -10,9 +10,11 @@ logger = logging.getLogger('main')
 
 def matcher(config, search_queue, match_queue):
 	logger.info("Matcher Running")
-	output_index = _index_output_dirs(config)
+	series_dirs_index = _index_series_dirs(config)
+
 	while True:
 		print('')
+
 		if search_queue.qsize() == 0:
 			logger.debug("end of search queue")
 			break
@@ -20,32 +22,15 @@ def matcher(config, search_queue, match_queue):
 		fse = search_queue.get()
 
 		gtmatch = guessit.guessit(fse.vfile.filename)
-		fse.gtmatch = gtmatch
+		fse.vfile.gtmatch = gtmatch
 		fse.vfile.title = gtmatch['title']
 
-		rules.get_rules(config, fse)
-		rules.matching_rules(config, fse)
+		if fse.vfile.gtmatch['type'] == 'episode':
+			series_matcher(config, fse, series_dirs_index)
+			if not fse.valid:
+				continue
 
-		logger.info('---' + fse.vfile.title + '---')
-		logger.log(15, "{}".format(fse.vfile.filename))
-
-		if not rules.valid_title(config, fse):
-			continue
-
-		index_match = difflib.get_close_matches(
-			fse.vfile.title, output_index.keys(), n=1, cutoff=0.6)
-
-		if not index_match:
-			logger.warning("NO MATCH")
-			continue
-		else:
-			fse.matched_dirpath = output_index[index_match[0]]['path']
-			fse.matched_dirname = index_match[0]
-			fse.matched_subdirs = output_index[index_match[0]]['subdirs']
-
-		rules.transfer_rules(config, fse, output_index)
-
-		logger.log(15, "{}".format(fse.gtmatch))
+		logger.log(15, "{}".format(fse.vfile.gtmatch))
 
 		if not fse.transfer_to:
 			logger.warn("No folder to transfer to")
@@ -61,13 +46,41 @@ def matcher(config, search_queue, match_queue):
 	logger.info("Matcher Done")
 
 
-def _index_output_dirs(config):
+def series_matcher(config, fse, series_dirs_index):
+	rules.get_series_rules(config, fse)
+	rules.series_matching_rules(config, fse)
+
+	_header_with_title(fse)
+
+	if not rules.series_valid_title(config, fse):
+		fse.valid = False
+
+	index_match = difflib.get_close_matches(
+		fse.vfile.title, series_dirs_index.keys(), n=1, cutoff=0.6)
+
+	if not index_match:
+		logger.warning("NO MATCH")
+		fse.valid = False
+	else:
+		fse.matched_dirpath = series_dirs_index[index_match[0]]['path']
+		fse.matched_dirname = index_match[0]
+		fse.matched_subdirs = series_dirs_index[index_match[0]]['subdirs']
+
+	rules.series_transfer_rules(config, fse, series_dirs_index)
+
+
+def _header_with_title(fse):
+	logger.info('---' + fse.vfile.title + '---')
+	logger.log(15, "{}".format(fse.vfile.filename))
+
+
+def _index_series_dirs(config):
 	logger.debug("indexing output directories")
 	"""returns {"foldername": {"path": "...", "subdirs": [..., ...]}} of all
 	output folder in config.yaml"""
 	tempdict = {}
 	# List through listed output dirs
-	for dir in config.output_dirs:
+	for dir in config.series_dirs:
 		dir = os.path.abspath(dir)
 
 		# list through output dir
@@ -77,7 +90,7 @@ def _index_output_dirs(config):
 				logger.debug("skipped '{}' because its not a directory".format(folder))
 				continue
 
-			# Check incase duplicates found in output dirs
+			# Check incase duplicates found in series dirs
 			if folder in tempdict:
 				raise KeyError("Duplicate name {}".format(folder))
 

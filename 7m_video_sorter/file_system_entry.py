@@ -1,4 +1,8 @@
 import os
+import logging
+
+
+logger = logging.getLogger('main')
 
 
 class FileSystemEntry:
@@ -11,18 +15,16 @@ class FileSystemEntry:
         self.path_to_fse = os.path.join(config.input_dir, fse)
         self.fse = fse
         self.vfile = VideoFile()
-        self.get_info()
-
-    def get_info(self):
-        """
-        - valid: True if its a valid file)
-        - isdir: True if its a directory
-        - vfile.filename: video filename
-        - vfile.abspath: abspath to video file
-        """
+        self.vfile.filename = None
+        self.vfile.abspath = None
+        self.vfile.gtmatch = None
         self.valid = False
         self.isdir = os.path.isdir(self.path_to_fse)
+        self.get_info()
+        self.rules = None
+        self.transfer_to = None
 
+    def get_info(self):
         if self.isdir:
             for item in os.listdir(self.path_to_fse):
                 # if secondary directory, ignore
@@ -35,6 +37,7 @@ class FileSystemEntry:
                     # reason: does not support multiple files right now!!
                     if self.valid:
                         self.valid = False
+                        logger.debug("invalid fse, more than one video file found")
                         break
                     self.vfile.filename = item
                     self.vfile.abspath = os.path.join(self.path_to_fse, item)

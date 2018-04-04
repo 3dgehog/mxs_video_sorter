@@ -9,7 +9,7 @@ input_dir:
 # Example.
 # output_dirs:
 #   - path/to/dir/1
-output_dirs:
+series_dirs:
 
 # list of folders to ignore in input folder
 # Example
