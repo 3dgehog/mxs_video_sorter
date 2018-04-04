@@ -21,5 +21,7 @@ def searcher(config, search_queue):
         if fse.valid:
             logger.debug("fse '{}' added".format(item))
             search_queue.put(fse)
+        else:
+            logger.debug("fse '{}' invalid".format(item))
 
     logger.info("Searcher Done")

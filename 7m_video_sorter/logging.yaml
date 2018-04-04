@@ -9,13 +9,14 @@ formatters:
     format: '%(log_color)s%(levelname)s:%(reset)s%(message_log_color)s%(message)s'
     log_colors:
       REVIEW: green
-      DEBUG: cyan
+      DEBUG: purple
       INFO: green
       WARNING: yellow
       ERROR: red
       CRITICAL: red,bg_white
     secondary_log_colors:
       message:
+        REVIEW: cyan
         WARNING: yellow
         ERROR: red
         CRITICAL: red

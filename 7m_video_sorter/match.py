@@ -11,7 +11,6 @@ logger = logging.getLogger('main')
 def matcher(config, search_queue, match_queue):
 	logger.debug("Matcher Running")
 	output_index = _index_output_dirs(config)
-	# search_queue.qsize()
 	while True:
 		print('')
 		if search_queue.qsize() == 0:
@@ -24,7 +23,8 @@ def matcher(config, search_queue, match_queue):
 		fse.gtmatch = gtmatch
 		fse.vfile.title = gtmatch['title']
 
-		fse = rules.before_index_match(config, fse)
+		rules.get_rules(config, fse)
+		rules.matching_rules(config, fse)
 
 		logger.info('---' + fse.vfile.title + '---')
 		logger.log(15, "{}".format(fse.vfile.filename))
@@ -32,23 +32,24 @@ def matcher(config, search_queue, match_queue):
 		if not rules.valid_title(config, fse):
 			continue
 
-		index_diffmatch = difflib.get_close_matches(
+		index_match = difflib.get_close_matches(
 			fse.vfile.title, output_index.keys(), n=1, cutoff=0.6)
 
-		if not index_diffmatch:
+		if not index_match:
 			logger.warning("NO MATCH")
 			continue
 		else:
-			fse.matched_dirpath = output_index[index_diffmatch[0]]['path']
-			fse.matched_dirname = index_diffmatch[0]
-			fse.matched_subdirs = output_index[index_diffmatch[0]]['subdirs']
+			fse.matched_dirpath = output_index[index_match[0]]['path']
+			fse.matched_dirname = index_match[0]
+			fse.matched_subdirs = output_index[index_match[0]]['subdirs']
 
-		fse = rules.transfer_rules(config, fse, output_index)
+		rules.transfer_rules(config, fse, output_index)
 
 		logger.log(15, "{}".format(fse.gtmatch))
 
 		if not fse.transfer_to:
 			logger.warn("No folder to transfer to")
+			logger.warn("IGNORED")
 			continue
 
 		logger.log(15, "transfer_to = '{}'".format(fse.transfer_to))
@@ -64,10 +65,14 @@ def matcher(config, search_queue, match_queue):
 
 		logger.debug("fse '{}' added".format(fse.vfile.title))
 		match_queue.put(fse)
+
+	if not config.args.transfer:
+		logger.warning("Nothing was transfered as the '-t argument wasn't passed".format(fse.vfile.title))
 	logger.info("Matcher Done")
 
 
 def _index_output_dirs(config):
+	logger.debug("indexing output directories")
 	"""returns {"foldername": {"path": "...", "subdirs": [..., ...]}} of all
 	output folder in config.yaml"""
 	tempdict = {}
@@ -99,5 +104,5 @@ def _index_output_dirs(config):
 
 				# Adds to subdir
 				tempdict[folder]['subdirs'].append(subfolder)
-
+	logger.debug("indexing done")
 	return tempdict
