@@ -19,14 +19,14 @@ DIFF_CUTOFF = 0.7
 
 def get_rules(config, fse):
 	fse.rules = None
-	diffmatch = difflib.get_close_matches(fse.vfile.title, config.rule_book.options('rules'), n=1, cutoff=DIFF_CUTOFF)
+	diffmatch = difflib.get_close_matches(fse.vfile.title, config.rule_book.options('series_rules'), n=1, cutoff=DIFF_CUTOFF)
 	regex_compile = re.compile("{}".format(fse.vfile.title), re.IGNORECASE)
-	regexmatch = list(filter(regex_compile.match, config.rule_book.options('rules')))
+	regexmatch = list(filter(regex_compile.match, config.rule_book.options('series_rules')))
 	if diffmatch or regexmatch:
 		if diffmatch:
-			rules = config.rule_book.get('rules', diffmatch[0])
+			rules = config.rule_book.get('series_rules', diffmatch[0])
 		if regexmatch:
-			rules = config.rule_book.get('rules', regexmatch[0])
+			rules = config.rule_book.get('series_rules', regexmatch[0])
 		if rules:
 			rules = rules.split(' ')
 			invalid_rule_patterns(rules)
@@ -57,7 +57,7 @@ def matching_rules(config, fse):
 
 
 def valid_title(config, fse):
-	if not difflib.get_close_matches(fse.vfile.title, config.rule_book.options('rules'), n=1, cutoff=DIFF_CUTOFF):
+	if not difflib.get_close_matches(fse.vfile.title, config.rule_book.options('series_rules'), n=1, cutoff=DIFF_CUTOFF):
 		logger.warning('NOT IN LIST')
 		if config.args.review:
 			return True
