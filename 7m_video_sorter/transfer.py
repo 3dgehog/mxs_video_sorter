@@ -32,7 +32,6 @@ def transferer(config, match_queue):
 
 		bar.update(counter)
 		logging.debug("copied to: '{}'".format(fse.transfer_to))
-		logging.info("Copy Successful")
 
 	logger.info("Transferer Done")
 
@@ -42,12 +41,15 @@ def copy(config, fse):
 	if not os.path.exists(os.path.join(fse.transfer_to, fse.vfile.filename)):
 		logger.critical("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
 		raise Exception("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
+	logging.info("COPIED")
 	if config.args.prevent_delete:
 		return
+	# remove directory or simple file
 	if fse.isdir:
 		shutil.rmtree(fse.path_to_fse)
 	else:
 		os.remove(fse.path_to_fse)
+	logging.info("DELETED FROM SOURCE")
 	logging.debug("fse removed")
 
 

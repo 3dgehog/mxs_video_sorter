@@ -33,13 +33,23 @@ def get_rules(config, fse):
 		else:
 			fse.rules = None
 			logger.warning("No rules set")
+	logger.debug("rules = {}".format(fse.rules))
 
 
 # Before Matching
 def matching_rules(config, fse):
+	if not fse.rules:
+		return
 	if 'alt-title' in fse.rules:
-		if 'alternative_title' in fse.gtmatch:
-			fse.vfile.title = fse.gtmatch['title'] + " - " + fse.gtmatch['alternative_title']
+		if 'alternative_title' in fse.gtmatch:  # REVIEW: Nonetype error
+			try:
+				separator = fse.rules[fse.rules.index('alt-title') + 1].replace(":", " ")
+			except IndexError:
+				raise KeyError("Missing separator for alt-title")
+			if separator in available_rules:
+				raise KeyError("Missing separator for alt-title")
+			fse.vfile.title = \
+				fse.gtmatch['title'] + separator + fse.gtmatch['alternative_title']
 			logger.log(15, "rule 'alt-title' OK")
 		else:
 			logger.warning("rule 'alt-title' WARN, no alternative_title key found")
@@ -61,7 +71,8 @@ def transfer_rules(config, fse, output_index):
 
 
 def rule_commands(config, fse, output_index):
-	logger.debug("rules = {}".format(fse.rules))
+	if not fse.rules:
+		return
 	if 'episode-only' in fse.rules:
 		try:
 			fse.gtmatch['episode'] = int(str(fse.gtmatch['season']) + str(fse.gtmatch['episode']))
@@ -108,8 +119,11 @@ def rule_commands(config, fse, output_index):
 def invalid_rule_patterns(rules):
 	for rule in rules:
 		if rule not in available_rules:
-			if rules[rules.index(rule) - 1] != 'subdir-only':
-				raise KeyError("Invalid rule : '{}'".format(rule))
+			if not rules[rules.index(rule) - 1] != 'subdir-only':
+				continue
+			if not rules[rules.index(rule) - 1] != 'alt-title':
+				continue
+			raise KeyError("Invalid rule : '{}'".format(rule))
 
 	invalid_matches = [
 		['subdir-only', 'parent-dir'],
