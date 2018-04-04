@@ -18,6 +18,7 @@ DIFF_CUTOFF = 0.7
 
 
 def get_rules(config, fse):
+	fse.rules = None
 	diffmatch = difflib.get_close_matches(fse.vfile.title, config.rule_book.options('rules'), n=1, cutoff=DIFF_CUTOFF)
 	regex_compile = re.compile("{}".format(fse.vfile.title), re.IGNORECASE)
 	regexmatch = list(filter(regex_compile.match, config.rule_book.options('rules')))

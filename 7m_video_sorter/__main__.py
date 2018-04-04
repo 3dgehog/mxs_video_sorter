@@ -53,9 +53,6 @@ config = config.ConfigManager()
 config.args = args
 logger.debug("args passed: {}".format(args))
 
-# print(config.rule_book)
-# raise
-
 match_queue = queue.Queue()
 search_queue = queue.Queue()
 
@@ -68,6 +65,6 @@ else:
     logger.info("No File System Entry detected")
 
 if args.review:
-    logger.info("Review done")
+    logger.info("Review Done")
 else:
-    logger.info("App done")
+    logger.info("App Done")

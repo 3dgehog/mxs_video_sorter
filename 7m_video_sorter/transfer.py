@@ -16,6 +16,7 @@ def transferer(config, match_queue):
 	bar = pbar(full_queue_size)
 	_pbar_thread = threading.Thread(target=_pbar_run, args=(bar,), daemon=True)
 	if config.args.transfer and not config.args.review:
+		logger.debug("Progress Bar thread started")
 		_pbar_thread.start()
 	while True:
 		counter += 1
@@ -33,9 +34,9 @@ def transferer(config, match_queue):
 
 		if not config.args.transfer:
 			logger.warning("Nothing was transfered because argument '-t' wasn't called")
-			return
+			break
 
-		logging.info("Working on {}".format(fse.vfile.title))
+		logger.info("Working on {}".format(fse.vfile.filename))
 
 		copy(config, fse)
 
@@ -45,20 +46,19 @@ def transferer(config, match_queue):
 
 
 def copy(config, fse):
-	logging.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
+	logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
 	shutil.copy(fse.vfile.abspath, fse.transfer_to)
 	if not os.path.exists(os.path.join(fse.transfer_to, fse.vfile.filename)):
 		logger.critical("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
 		raise Exception("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
-	logging.info("COPIED")
+	logger.info("COPIED")
 	if config.args.prevent_delete:
 		return
 	if fse.isdir:
 		shutil.rmtree(fse.path_to_fse)
 	else:
 		os.remove(fse.path_to_fse)
-	logging.info("DELETED FROM SOURCE")
-	logging.debug("fse removed")
+	logger.info("DELETED FROM Input Folder")
 
 
 def pbar(full_queue_size):
