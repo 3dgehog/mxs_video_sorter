@@ -9,7 +9,7 @@ logger = logging.getLogger('main')
 
 
 def matcher(config, search_queue, match_queue):
-	logger.debug("Matcher Running")
+	logger.info("Matcher Running")
 	output_index = _index_output_dirs(config)
 	while True:
 		print('')
@@ -55,19 +55,9 @@ def matcher(config, search_queue, match_queue):
 		logger.log(15, "transfer_to = '{}'".format(fse.transfer_to))
 		logger.info("MATCHED")
 
-		if config.args.review:
-			logger.debug("fse '{}' not added, in review mode".format(fse.vfile.title))
-			continue
-
-		if not config.args.transfer:
-			logger.debug("fse '{}' not added, not in transfer mode".format(fse.vfile.title))
-			continue
-
 		logger.debug("fse '{}' added".format(fse.vfile.title))
 		match_queue.put(fse)
 
-	if not config.args.transfer:
-		logger.warning("Nothing was transfered as the '-t argument wasn't passed".format(fse.vfile.title))
 	logger.info("Matcher Done")
 
 

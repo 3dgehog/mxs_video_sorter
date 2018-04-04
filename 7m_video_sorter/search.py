@@ -6,7 +6,7 @@ logger = logging.getLogger('main')
 
 
 def searcher(config, search_queue):
-    logger.debug("Searcher Running")
+    logger.info("Searcher Running")
     for item in os.listdir(config.input_dir):
 
         # Ignore config ignore files
