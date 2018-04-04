@@ -9,7 +9,7 @@ logger = logging.getLogger('main')
 
 
 def transferer(config, match_queue):
-	if config.args.review:
+	if config.args.review or not config.args.transfer:
 		return
 	bar = pbar(match_queue.qsize())
 	global counter

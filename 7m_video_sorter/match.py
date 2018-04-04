@@ -48,13 +48,18 @@ def matcher(config, search_queue, match_queue):
 		logger.log(15, "{}".format(fse.gtmatch))
 
 		if not fse.transfer_to:
-			logging.warn("transfer_to = '{}'".format(fse.transfer_to))
+			logger.warn("No folder to transfer to")
 			continue
 
-		logging.log(15, "transfer_to = '{}'".format(fse.transfer_to))
+		logger.log(15, "transfer_to = '{}'".format(fse.transfer_to))
 		logger.info("MATCHED")
 
 		if config.args.review:
+			logger.debug("fse '{}' not added, in review mode".format(fse.vfile.title))
+			continue
+
+		if not config.args.transfer:
+			logger.debug("fse '{}' not added, not in transfer mode".format(fse.vfile.title))
 			continue
 
 		logger.debug("fse '{}' added".format(fse.vfile.title))

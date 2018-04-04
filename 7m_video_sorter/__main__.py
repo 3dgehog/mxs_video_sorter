@@ -15,6 +15,9 @@ import match
 import transfer
 
 parser = argparse.ArgumentParser()
+parser.add_argument("-t", "--transfer",
+                    help="Pass this argument to make the transfer",
+                    action="store_true")
 parser.add_argument("-r", "--review",
                     help="Runs through all files in output dir for review, doesn't transfer anything",
                     action="store_true")

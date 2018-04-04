@@ -58,9 +58,10 @@ def rule_commands(config, fse, rules, output_index):
 		subdir_index = rules.index('subdir-only') + 1
 		subdir = rules[subdir_index].replace(':', ' ')
 		if subdir not in fse.matched_subdirs:
-			raise KeyError("Subdir '{}' doesn't exists".format(subdir))
-		fse.transfer_to = os.path.join(fse.matched_dirpath, subdir)
-		logger.log(15, "rule 'subdir-only' OK")
+			logger.warning("rule 'subdir-only' WARN > subdir '{}' doesn't exists".format(subdir))
+		else:
+			fse.transfer_to = os.path.join(fse.matched_dirpath, subdir)
+			logger.log(15, "rule 'subdir-only' OK")
 
 	if 'season' in rules:
 		if 'season' not in fse.gtmatch:
