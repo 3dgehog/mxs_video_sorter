@@ -23,6 +23,7 @@ class ConfigManager:
         self._run_before_scripts()
         self._verify_get_input_dir()
         self._verify_get_series_dirs()
+        self._verify_get_movies_dir()
         self.ignore = self.yamlconfig["ignore"]
         self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
         self._get_rule_book()
@@ -60,6 +61,15 @@ class ConfigManager:
             dirs.append(dir)
         logger.debug("got series dirs '{}'".format(dirs))
         self.series_dirs = dirs
+
+    def _verify_get_movies_dir(self):
+        """Returns movies_dir from the config.yaml file"""
+        if not self.yamlconfig["movies_dir"]:
+            raise ValueError("Couldn't find movies directory from config.yaml")
+        if not os.path.exists(self.yamlconfig["movies_dir"]):
+            raise ValueError("{} doesn't exists".format(self.yamlconfig["movies_dir"]))
+        logger.debug("got movies dir {}".format(self.yamlconfig["movies_dir"]))
+        self.movies_dir = self.yamlconfig["movies_dir"]
 
     def _verify_get_input_dir(self):
         """Returns input_dir from the config.yaml file"""

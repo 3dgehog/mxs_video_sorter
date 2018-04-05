@@ -5,11 +5,18 @@
 # input_dir: "path/to/input/dir"
 input_dir:
 
-# list of directories it will copy the videos to
+# list of directories it will copy the series to
 # Example.
 # output_dirs:
 #   - path/to/dir/1
 series_dirs:
+
+
+# The directory it will it will copy the movies to
+# Example
+# movies_dir: "path/to/movie/dir"
+movies_dir:
+
 
 # list of folders to ignore in input folder
 # Example
