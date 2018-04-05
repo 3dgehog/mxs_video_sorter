@@ -30,6 +30,11 @@ def matcher(config, search_queue, match_queue):
 			if not fse.valid:
 				continue
 
+		if fse.vfile.guessitmatch['type'] == 'movie':
+			movies_matcher(config, fse)
+			if not fse.valid:
+				continue
+
 		logger.log(15, "{}".format(fse.vfile.guessitmatch))
 
 		if not fse.transfer_to:
@@ -44,6 +49,11 @@ def matcher(config, search_queue, match_queue):
 		match_queue.put(fse)
 
 	logger.info("Matcher Done")
+
+
+def movies_matcher(config, fse):
+	_header_with_title(fse)
+	fse.transfer_to = config.movies_dir
 
 
 def series_matcher(config, fse, series_dirs_index):
