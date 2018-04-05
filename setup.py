@@ -19,7 +19,7 @@ setup(
 	packages=['mxs_video_sorter'],
 	scripts=['mxs_video_sorter/main.py'],
 	package_data={
-		'mxs_video_sorter': ['*.yaml', '*.conf']
+		'mxs_video_sorter': ['.conf_template', '*.yaml', '*.conf']
 	},
 	classifiers=[
 		"Programming Language :: Python :: 3",
