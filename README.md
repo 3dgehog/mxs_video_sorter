@@ -110,3 +110,7 @@ This is the rule book the sorter will use to sort your videos. it currently only
 5. alt-title " - "
 
    Sometimes the matcher separates the title into a title and alternative title, if you need them combined, use this option
+
+6. format-title "&(title)s_&(episode)s"
+
+   Formats the video file right before trnsfering. The options are --> (title), (episode), (season), (title1), (title2), (title...). The titles with a number are word indexes in your title, so House MD would be title1=House title2=MD
