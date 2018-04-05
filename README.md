@@ -4,10 +4,9 @@ A simple python sorter that attempts to sort your video series and movies into t
 
 ```bash
 git pull https://github.com/Scheercuzy/mxs_video_sorter.git
-cd mxs_video_sorter
 virtualenv -p python3 env
 source env/bin/activate
-pip install .
+pip install mxs_video_sorter-master.zip
 ```
 
 ## Usage
@@ -15,7 +14,7 @@ pip install .
 The first time you run it, it will complain about not being able to find your input_dir, you will have to head to the [configs](#configs) and configure your config.yaml with your input_dir and series_dirs.
 Once done, run it again to start.
 ```bash
-python mxs_video_sorter/main.py
+mxs_video_sorter
 ```
 You will see the result of the search but nothing will be transfered, and probably a bunch of "NOT IN LIST" or "NO MATCH"
 

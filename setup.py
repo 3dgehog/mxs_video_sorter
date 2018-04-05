@@ -1,4 +1,8 @@
-from setuptools import setup
+import sys
+from setuptools import setup, find_packages
+
+if sys.version_info[0] < 3:
+	raise "Must be using Python 3"
 
 
 def readme():
@@ -16,8 +20,12 @@ setup(
 	author='Scheercuzy',
 	author_email='maxi730@gmail.com',
 	license='MIT',
-	packages=['mxs_video_sorter'],
-	scripts=['mxs_video_sorter/main.py'],
+	packages=find_packages(),
+	entry_points={
+		'console_scripts': [
+			'mxs_video_sorter = mxs_video_sorter.__main__:main'
+		]
+	},
 	package_data={
 		'mxs_video_sorter': [
 			'conf_template/config.yaml',

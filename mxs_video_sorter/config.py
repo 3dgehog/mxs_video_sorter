@@ -44,10 +44,10 @@ class ConfigManager:
             logger.debug("config folder didn't exists, therefore created")
             os.makedirs(self.config_dir)
 
-        for file in os.listdir("conf_template"):
+        for file in os.listdir("mxs_video_sorter/conf_template"):
             # if files in .conf doesn't exist in $HOME/.config/7m_video_sorter, create it
             if not os.path.exists(os.path.join(self.config_dir, file)):
-                shutil.copyfile(os.path.join("conf_template", file),
+                shutil.copyfile(os.path.join("mxs_video_sorter/conf_template", file),
                                 os.path.join(self.config_dir, file))
 
     def _verify_get_series_dirs(self):

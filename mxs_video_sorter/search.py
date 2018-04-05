@@ -1,6 +1,6 @@
 import os
 import logging
-from file_system_entry import FileSystemEntry
+from mxs_video_sorter.file_system_entry import FileSystemEntry
 
 logger = logging.getLogger('main')
 

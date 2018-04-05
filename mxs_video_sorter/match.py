@@ -3,7 +3,7 @@ import os
 import guessit
 import difflib
 
-import rules
+from mxs_video_sorter import rules
 
 logger = logging.getLogger('main')
 
