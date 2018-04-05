@@ -27,7 +27,7 @@ class ConfigManager:
         self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
         self._get_rule_book()
 
-    video_extension_list = ['mkv', 'm4v', 'avi', 'mp4']
+    video_extension_list = ['mkv', 'm4v', 'avi', 'mp4', 'mov']
 
     def _get_rule_book(self):
         config = configparser.ConfigParser(allow_no_value=True)
