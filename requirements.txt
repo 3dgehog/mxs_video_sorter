@@ -1,9 +1,0 @@
-babelfish==0.5.5
-colorlog==3.1.2
-guessit==2.1.4
-progressbar2==3.36.0
-python-dateutil==2.7.2
-python-utils==2.3.0
-PyYAML==3.12
-rebulk==0.9.0
-six==1.11.0
