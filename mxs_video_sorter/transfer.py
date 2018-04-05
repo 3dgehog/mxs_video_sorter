@@ -52,11 +52,17 @@ def transferer(config, match_queue):
 
 def copy(config, fse):
 	logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
-	shutil.copy(fse.vfile.abspath, fse.transfer_to)
+
+	if os.path.isdir(fse.vfile.transfer_to):
+		shutil.copy(fse.vfile.abspath, fse.transfer_to)
+	else:
+		shutil.copy(fse.vfile.abspath, fse.transfer_to)
+
 	if not os.path.exists(os.path.join(fse.transfer_to, fse.vfile.filename)):
 		logger.critical("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
 		raise Exception("The file {} was copied but doesn't exist in copied location".format(fse.vfile.filename))
 	logger.info("COPIED")
+
 	if config.args.prevent_delete:
 		return
 	if fse.isdir:

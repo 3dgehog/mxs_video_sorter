@@ -1,8 +1,4 @@
-import sys
 from setuptools import setup, find_packages
-
-if sys.version_info[0] < 3:
-	raise "Must be using Python 3"
 
 
 def readme():

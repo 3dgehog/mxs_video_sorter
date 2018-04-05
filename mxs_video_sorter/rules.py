@@ -12,7 +12,8 @@ valid_series_rules = [
 	'parent-dir',
 	'season',
 	'episode-only',
-	'alt-title'
+	'alt-title',
+	'format-title'
 ]
 
 DIFF_CUTOFF = 0.7
@@ -110,6 +111,21 @@ def series_transfer_rules(config, fse, series_dirs_index):
 				fse.transfer_to = path_to_new_dir
 				logger.log(15, "rule 'season' OK")
 
+	if 'format-title' in fse.rules:
+		guessit_dict = dict(fse.vfile.guessitmatch)
+		titles = guessit_dict['title'].split(' ')
+		count = 1
+		temp_dict = {}
+		for title in titles:
+			temp_dict['title' + str(count)] = title
+			count += 1
+		guessit_dict = _merge_two_dicts(guessit_dict, temp_dict)
+		format_index = fse.rules.index('format-title') + 1
+		newname = fse.rules[format_index].replace('&', '%') % (guessit_dict) + \
+			"." + guessit_dict['container']
+		fse.transfer_to = os.path.join(fse.transfer_to, newname)
+		logger.log(15, "rule 'format-title' OK")
+
 
 def _invalid_series_rule_check(rules):
 	for rule in rules:
@@ -117,6 +133,8 @@ def _invalid_series_rule_check(rules):
 			if not rules[rules.index(rule) - 1] != 'subdir-only':
 				continue
 			if not rules[rules.index(rule) - 1] != 'alt-title':
+				continue
+			if not rules[rules.index(rule) - 1] != 'format-title':
 				continue
 			raise KeyError("Invalid series rule: '{}'".format(rule))
 
@@ -128,3 +146,9 @@ def _invalid_series_rule_check(rules):
 	for invalid_pair in invalid_series_rule_pairs:
 		if all(item in rules for item in invalid_pair):
 			raise KeyError("Invalid rule pairing: {}".format(rules))
+
+
+def _merge_two_dicts(x, y):
+	z = x.copy()
+	z.update(y)
+	return z
