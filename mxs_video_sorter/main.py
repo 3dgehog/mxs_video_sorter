@@ -9,10 +9,15 @@ import logging.config
 import yaml
 import argparse
 import progressbar
+import os
+
+os.chdir(os.path.dirname(__file__))
 
 import search
 import match
 import transfer
+
+print(sys.path[0])
 
 # Arguments
 parser = argparse.ArgumentParser()
@@ -37,7 +42,7 @@ args = parser.parse_args()
 progressbar.streams.wrap_stderr()
 
 # load logging configs
-with open('7m_video_sorter/logging.yaml', 'r') as ymlfile:
+with open('logging.yaml', 'r') as ymlfile:
     yamlconfig = yaml.load(ymlfile)
 logging.config.dictConfig(yamlconfig)
 

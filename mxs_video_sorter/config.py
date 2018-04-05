@@ -17,7 +17,7 @@ class ConfigManager:
     - rule_book : The rulebook to organize series
     """
     def __init__(self):
-        self.config_dir = os.path.join(os.environ['HOME'], '.config/7m_video_sorter/')
+        self.config_dir = os.path.join(os.environ['HOME'], '.config/mxs_video_sorter/')
         self._verify_config_dir()
         self._get_yamlconfig()
         self._run_before_scripts()
@@ -44,10 +44,10 @@ class ConfigManager:
             logger.debug("config folder didn't exists, therefore created")
             os.makedirs(self.config_dir)
 
-        for file in os.listdir("7m_video_sorter/.conf"):
+        for file in os.listdir(".conf_template"):
             # if files in .conf doesn't exist in $HOME/.config/7m_video_sorter, create it
             if not os.path.exists(os.path.join(self.config_dir, file)):
-                shutil.copyfile(os.path.join("7m_video_sorter/.conf", file),
+                shutil.copyfile(os.path.join(".conf_template", file),
                                 os.path.join(self.config_dir, file))
 
     def _verify_get_series_dirs(self):

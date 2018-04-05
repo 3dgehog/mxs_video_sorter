@@ -7,18 +7,19 @@ def readme():
 
 
 setup(
-	name='7m_video_sorter',
+	name='mxs_video_sorter',
 	version='1.0a1',
 	python_requires='>=3.5',
-	description='A video sorter for series and movies',
+	description="Mx's video sorter for series and movies",
 	long_description=readme(),
-	url='http://github.com/Scheercuzy/7m_video_sorter',
+	url='http://github.com/Scheercuzy/mxs_video_sorter',
 	author='Scheercuzy',
 	author_email='maxi730@gmail.com',
 	license='MIT',
-	packages=['7m_video_sorter'],
+	packages=['mxs_video_sorter'],
+	scripts=['mxs_video_sorter/main.py'],
 	package_data={
-		'7m_video_sorter': ['*.yaml', '*.conf']
+		'mxs_video_sorter': ['*.yaml', '*.conf']
 	},
 	classifiers=[
 		"Programming Language :: Python :: 3",
@@ -30,6 +31,5 @@ setup(
 		'guessit==2.1.4',
 		'progressbar2==3.36.0',
 		'PyYAML==3.12',
-	],
-	zip_safe=False
+	]
 )

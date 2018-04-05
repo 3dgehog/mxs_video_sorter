@@ -1,5 +1,5 @@
 *.pyc
 .DS_Store
-venv
+env
 sample
 __pycache__
