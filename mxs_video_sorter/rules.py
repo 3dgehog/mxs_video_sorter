@@ -2,6 +2,7 @@ import logging
 import difflib
 import os
 import re
+import shlex
 
 logger = logging.getLogger('main')
 
@@ -27,7 +28,7 @@ def get_series_rules(config, fse):
 		if regexmatch:
 			rules = config.rule_book.get('series_rules', regexmatch[0])
 		if rules:
-			rules = rules.split(' ')
+			rules = shlex.split(rules)
 			_invalid_series_rule_check(rules)
 			fse.rules = rules
 		else:

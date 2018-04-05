@@ -64,7 +64,7 @@ These are all rules that we need specify in the rule_book for the program to kno
 [series_rules]
 Blue Mountain State=season
 Lucifer=season
-Homeland=subdir-only All:Episodes
+Homeland=subdir-only "All Episodes"
 House MD=parent-dir
 ```
 You should now see each show title with the INFO "MATCHED" below it, but it will not transfer the files yet.
@@ -105,9 +105,9 @@ This is the rule book the sorter will use to sort your videos. it currently only
 3. parent-dir
 
    Sets the transfer to the parent directory, doesn't attempt to located the subdirectory this episode should go into. Mainly used for anime
-4. subdir-only subdir:name
+4. subdir-only "subdir name"
 
-   Sets the transfer to a specific subdirectory only. (use ':' in instead of spaces)
-5. alt-title :-:
+   Sets the transfer to a specific subdirectory only.
+5. alt-title " - "
 
-   Sometimes the matcher separates the title into a title and alternative title, if you need them combined, use this option (use ':' in instead of spaces)
+   Sometimes the matcher separates the title into a title and alternative title, if you need them combined, use this option
