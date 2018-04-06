@@ -19,7 +19,7 @@ def matcher(config, search_queue, match_queue):
 
 		fse = search_queue.get()
 
-		get_guessit_match(fse)
+		get_guessitmatch(fse)
 		if not fse.valid:
 			continue
 
@@ -49,8 +49,16 @@ def matcher(config, search_queue, match_queue):
 	logger.info("Matcher Done")
 
 
-def get_guessit_match(fse):
+def get_guessitmatch(fse):
 	guessitmatch = guessit.guessit(fse.vfile.filename)
+	if fse.isdir:
+		guessitmatch_foldername = guessit.guessit(fse.fse)
+		if len(guessitmatch_foldername) > len(guessitmatch):
+			guessitmatch = guessitmatch_foldername
+			logging.debug(
+				"used foldername instead of filename for guessit match. \
+				filename match = '{}' \nfoldername match = '{}'".format(
+					guessitmatch, guessitmatch_foldername))
 	fse.guessitmatch = guessitmatch
 	try:
 		fse.vfile.title = guessitmatch['title']
