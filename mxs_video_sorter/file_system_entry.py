@@ -17,14 +17,14 @@ class FileSystemEntry:
         self.vfile = VideoFile()
         self.vfile.filename = None
         self.vfile.abspath = None
-        self.vfile.guessitmatch = None
+        self.guessitmatch = None
         self.valid = False
         self.isdir = os.path.isdir(self.path_to_fse)
-        self.get_info()
+        self.get_fse_info()
         self.rules = None
         self.transfer_to = None
 
-    def get_info(self):
+    def get_fse_info(self):
         if self.isdir:
             for item in os.listdir(self.path_to_fse):
                 # if secondary directory, ignore

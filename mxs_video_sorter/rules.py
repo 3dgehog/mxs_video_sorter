@@ -66,7 +66,7 @@ def series_valid_title(config, fse):
 
 
 # Before Transfering
-def series_transfer_rules(config, fse, series_dirs_index):
+def series_transfer_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'episode-only' in fse.rules:
@@ -106,7 +106,7 @@ def series_transfer_rules(config, fse, series_dirs_index):
 			elif not fse.transfer_to and config.args.create_dir:
 				path_to_new_dir = os.path.join(fse.matched_dirpath, "Season {}".format(season))
 				os.mkdir(path_to_new_dir)
-				series_dirs_index[fse.matched_dirname]["subdirs"].append(os.path.basename(path_to_new_dir))
+				config.series_dirs_index[fse.matched_dirname]["subdirs"].append(os.path.basename(path_to_new_dir))
 				logger.info("Created directory: '{}' ".format(path_to_new_dir))
 				fse.transfer_to = path_to_new_dir
 				logger.log(15, "rule 'season' OK")
