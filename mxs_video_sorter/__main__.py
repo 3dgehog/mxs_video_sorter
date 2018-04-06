@@ -42,6 +42,7 @@ def main():
     # Logging
     logger = logging.getLogger('main')
     logging.addLevelName(15, "REVIEW")
+    logging.addLevelName(11, "TRACE")
 
     if args.review:
         logger.setLevel(15)

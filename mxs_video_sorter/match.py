@@ -21,21 +21,21 @@ def matcher(config, search_queue, match_queue):
 
 		fse = search_queue.get()
 
-		guessitmatch = guessit.guessit(fse.vfile.filename)
-		fse.vfile.guessitmatch = guessitmatch
-		fse.vfile.title = guessitmatch['title']
+		get_guessit_match(fse)
+		if not fse.valid:
+			continue
 
-		if fse.vfile.guessitmatch['type'] == 'episode':
+		if fse.guessitmatch['type'] == 'episode':
 			series_matcher(config, fse, series_dirs_index)
 			if not fse.valid:
 				continue
 
-		if fse.vfile.guessitmatch['type'] == 'movie':
+		if fse.guessitmatch['type'] == 'movie':
 			movies_matcher(config, fse)
 			if not fse.valid:
 				continue
 
-		logger.log(15, "{}".format(fse.vfile.guessitmatch))
+		logger.log(15, "{}".format(fse.guessitmatch))
 
 		if not fse.transfer_to:
 			logger.warn("No folder to transfer to")
@@ -51,9 +51,21 @@ def matcher(config, search_queue, match_queue):
 	logger.info("Matcher Done")
 
 
+def get_guessit_match(fse):
+	guessitmatch = guessit.guessit(fse.vfile.filename)
+	fse.guessitmatch = guessitmatch
+	try:
+		fse.vfile.title = guessitmatch['title']
+	except KeyError:
+		logging.warning("error trying to find title for '{}'".format(fse.vfile.filename))
+		logging.debug("error guessit match dict '{}'".format(fse.guessitmatch))
+		logging.log(11, "HERE #########")
+		fse.valid = False
+
+
 def movies_matcher(config, fse):
 	_header_with_title(fse)
-	fse.transfer_to = config.movies_dir
+	# fse.transfer_to = config.movies_dir
 
 
 def series_matcher(config, fse, series_dirs_index):

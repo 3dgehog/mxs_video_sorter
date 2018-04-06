@@ -42,7 +42,7 @@ def series_matching_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'alt-title' in fse.rules:
-		if 'alternative_title' in fse.vfile.guessitmatch:
+		if 'alternative_title' in fse.guessitmatch:
 			try:
 				separator = fse.rules[fse.rules.index('alt-title') + 1].replace(":", " ")
 			except IndexError:
@@ -50,7 +50,7 @@ def series_matching_rules(config, fse):
 			if separator in valid_series_rules:
 				raise KeyError("Missing separator for alt-title")
 			fse.vfile.title = \
-				fse.vfile.guessitmatch['title'] + separator + fse.vfile.guessitmatch['alternative_title']
+				fse.guessitmatch['title'] + separator + fse.guessitmatch['alternative_title']
 			logger.log(15, "rule 'alt-title' OK")
 		else:
 			logger.warning("rule 'alt-title' WARN, no alternative_title key found")
@@ -71,11 +71,11 @@ def series_transfer_rules(config, fse, series_dirs_index):
 		return
 	if 'episode-only' in fse.rules:
 		try:
-			fse.vfile.guessitmatch['episode'] = int(str(fse.vfile.guessitmatch['season']) + str(fse.vfile.guessitmatch['episode']))
+			fse.guessitmatch['episode'] = int(str(fse.guessitmatch['season']) + str(fse.guessitmatch['episode']))
 		except KeyError:
 			logger.debug("error episode-only merging, missing season key")
 			pass
-		fse.vfile.guessitmatch.pop('season', None)
+		fse.guessitmatch.pop('season', None)
 		logger.log(15, "rule 'episode-only' OK")
 
 	if 'parent-dir' in fse.rules:
@@ -92,10 +92,10 @@ def series_transfer_rules(config, fse, series_dirs_index):
 			logger.log(15, "rule 'subdir-only' OK")
 
 	if 'season' in fse.rules:
-		if 'season' not in fse.vfile.guessitmatch:
+		if 'season' not in fse.guessitmatch:
 			logger.warning("rule 'season' WARN > Couldn't find Season from filename")
 		else:
-			season = str(fse.vfile.guessitmatch['season'])
+			season = str(fse.guessitmatch['season'])
 			for subdir in fse.matched_subdirs:
 				search = re.search("^Season {}".format(season), subdir, re.IGNORECASE)
 				if search:
@@ -112,7 +112,7 @@ def series_transfer_rules(config, fse, series_dirs_index):
 				logger.log(15, "rule 'season' OK")
 
 	if 'format-title' in fse.rules:
-		guessit_dict = dict(fse.vfile.guessitmatch)
+		guessit_dict = dict(fse.guessitmatch)
 		titles = guessit_dict['title'].split(' ')
 		count = 1
 		temp_dict = {}

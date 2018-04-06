@@ -39,5 +39,6 @@ setup(
 		'guessit==2.1.4',
 		'progressbar2==3.36.0',
 		'PyYAML==3.12',
+		'guess-language-spirit==0.5.3'
 	]
 )

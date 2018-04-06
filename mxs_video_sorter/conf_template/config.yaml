@@ -12,10 +12,11 @@ input_dir:
 series_dirs:
 
 
-# The directory it will it will copy the movies to
+# The directories it will copy the movies to
 # Example
-# movies_dir: "path/to/movie/dir"
-movies_dir:
+# movies_dirs:
+#   - "path/to/movie/dir"
+movies_dirs:
 
 
 # list of folders to ignore in input folder

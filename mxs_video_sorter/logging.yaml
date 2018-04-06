@@ -8,6 +8,7 @@ formatters:
     (): 'colorlog.ColoredFormatter'
     format: '%(log_color)s%(levelname)s:%(reset)s%(message_log_color)s%(message)s'
     log_colors:
+      TRACE: cyan
       REVIEW: green
       DEBUG: purple
       INFO: green
@@ -16,6 +17,7 @@ formatters:
       CRITICAL: red,bg_white
     secondary_log_colors:
       message:
+        TRACE: purple
         REVIEW: cyan
         WARNING: yellow
         ERROR: red
