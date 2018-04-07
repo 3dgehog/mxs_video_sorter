@@ -51,12 +51,17 @@ def transferer(config, match_queue):
 
 
 def copy(config, fse):
-	logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
+	if fse.guessitmatch['type'] == 'episode':
+		logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
+		shutil.copy(fse.vfile.abspath, fse.transfer_to)
 
-	if os.path.isdir(fse.transfer_to):
-		shutil.copy(fse.vfile.abspath, fse.transfer_to)
-	else:
-		shutil.copy(fse.vfile.abspath, fse.transfer_to)
+	if fse.guessitmatch['type'] == 'movie':
+		if fse.isdir:
+			logger.debug("copying: '{}' to: '{}'".format(fse.fse, fse.transfer_to))
+			shutil.copytree(fse.path_to_fse, fse.transfer_to)
+		else:
+			logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
+			shutil.copy(fse.vfile.abspath, fse.transfer_to)
 
 	logger.info("COPIED")
 

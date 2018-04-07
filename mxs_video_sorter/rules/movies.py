@@ -1,4 +1,5 @@
 import logging
+import os
 from guess_language import guess_language
 
 logger = logging.getLogger('main')
@@ -19,6 +20,9 @@ def transfer_rules(config, fse):
 	for groupname, path in config.movies_dirs.items():
 		if groupname == config_section:
 			fse.transfer_to = path
+	if fse.isdir:
+		logger.debug("movie is in a directory, changing tranfer_to")
+		fse.transfer_to = os.path.join(path, fse.fse)
 
 
 def _find_movies_group(config, fse):
