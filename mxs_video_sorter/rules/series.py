@@ -19,7 +19,7 @@ valid_series_rules = [
 DIFF_CUTOFF = 0.7
 
 
-def get_series_rules(config, fse):
+def get_rules(config, fse):
 	diffmatch = difflib.get_close_matches(fse.vfile.title, config.rule_book.options('series_rules'), n=1, cutoff=DIFF_CUTOFF)
 	regex_compile = re.compile("{}".format(fse.vfile.title), re.IGNORECASE)
 	regexmatch = list(filter(regex_compile.match, config.rule_book.options('series_rules')))
@@ -30,7 +30,7 @@ def get_series_rules(config, fse):
 			rules = config.rule_book.get('series_rules', regexmatch[0])
 		if rules:
 			rules = shlex.split(rules)
-			_invalid_series_rule_check(rules)
+			_invalid_rule_check(rules)
 			fse.rules = rules
 		else:
 			logger.warning("No rules set")
@@ -38,7 +38,7 @@ def get_series_rules(config, fse):
 
 
 # Before Matching
-def series_matching_rules(config, fse):
+def matching_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'alt-title' in fse.rules:
@@ -56,7 +56,7 @@ def series_matching_rules(config, fse):
 			logger.warning("rule 'alt-title' WARN, no alternative_title key found")
 
 
-def series_valid_title(config, fse):
+def valid_title(config, fse):
 	if not difflib.get_close_matches(fse.vfile.title, config.rule_book.options('series_rules'), n=1, cutoff=DIFF_CUTOFF):
 		logger.warning('NOT IN LIST')
 		if config.args.review:
@@ -66,7 +66,7 @@ def series_valid_title(config, fse):
 
 
 # Before Transfering
-def series_transfer_rules(config, fse):
+def transfer_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'episode-only' in fse.rules:
@@ -127,7 +127,7 @@ def series_transfer_rules(config, fse):
 		logger.log(15, "rule 'format-title' OK")
 
 
-def _invalid_series_rule_check(rules):
+def _invalid_rule_check(rules):
 	for rule in rules:
 		if rule not in valid_series_rules:
 			if not rules[rules.index(rule) - 1] != 'subdir-only':

@@ -2,7 +2,7 @@ import logging
 import guessit
 import difflib
 
-from mxs_video_sorter import rules
+from mxs_video_sorter.rules import series, movies
 
 logger = logging.getLogger('main')
 
@@ -70,16 +70,17 @@ def get_guessitmatch(fse):
 
 def movies_matcher(config, fse):
 	_header_with_title(fse)
+	movies.get_sections(config, fse)
 	# fse.transfer_to = config.movies_dir
 
 
 def series_matcher(config, fse):
-	rules.get_series_rules(config, fse)
-	rules.series_matching_rules(config, fse)
+	series.get_rules(config, fse)
+	series.matching_rules(config, fse)
 
 	_header_with_title(fse)
 
-	if not rules.series_valid_title(config, fse):
+	if not series.valid_title(config, fse):
 		fse.valid = False
 
 	index_match = difflib.get_close_matches(
@@ -93,7 +94,7 @@ def series_matcher(config, fse):
 		fse.matched_dirname = index_match[0]
 		fse.matched_subdirs = config.series_dirs_index[index_match[0]]['subdirs']
 
-	rules.series_transfer_rules(config, fse)
+	series.transfer_rules(config, fse)
 
 
 def _header_with_title(fse):

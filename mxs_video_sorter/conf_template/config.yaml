@@ -15,7 +15,7 @@ series_dirs:
 # The directories it will copy the movies to
 # Example
 # movies_dirs:
-#   - "path/to/movie/dir"
+#   Name of folder: "path/to/movie/dir"
 movies_dirs:
 
 

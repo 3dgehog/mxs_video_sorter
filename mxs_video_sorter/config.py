@@ -32,9 +32,10 @@ class ConfigManager:
 	video_extension_list = ['mkv', 'm4v', 'avi', 'mp4', 'mov']
 
 	def _get_series_dirs_index(self):
-		logger.debug("indexing output directories")
-		"""returns {"foldername": {"path": "...", "subdirs": [..., ...]}} of all
+		"""sets self.series_dirs_index as
+		{"foldername": {"path": "...", "subdirs": [..., ...]}} of all
 		output folder in config.yaml"""
+		logger.debug("indexing output directories")
 		tempdict = {}
 		# List through listed output dirs
 		for dir in self.series_dirs:
@@ -68,15 +69,19 @@ class ConfigManager:
 		self.series_dirs_index = tempdict
 
 	def _get_rule_book(self):
+		"""Sets self.rule_book as ConfigParser object on rule_book.conf"""
 		config = configparser.ConfigParser(allow_no_value=True)
 		config.read(os.path.join(self.config_dir + 'rule_book.conf'))
+		logger.debug("got rule_book '{}'".format(dict(config)))
 		self.rule_book = config
 
 	def _get_yamlconfig(self):
+		"""Sets self.yamlconfig as dict from config.yaml"""
 		with open(os.path.join(self.config_dir, "config.yaml"), 'r') as ymlfile:
 			self.yamlconfig = yaml.load(ymlfile)
 
 	def _verify_config_dir(self):
+		"""Checks if config dir exists and creates it if it didn't"""
 		# if $HOME/.config/7m_video_sorter doesn't exists, create it
 		if not os.path.exists(self.config_dir):
 			logger.debug("config folder didn't exists, therefore created")
@@ -90,6 +95,8 @@ class ConfigManager:
 					os.path.join(self.config_dir, file))
 
 	def _verify_get_series_dirs(self):
+		"""Sets self.series_dirs as a list of all directories in config.yaml
+		['path/to/output/dir/1', 'path/to/output/dir/2']"""
 		dirs = []
 		for dir in self.yamlconfig["series_dirs"]:
 			if not dir:
@@ -101,19 +108,19 @@ class ConfigManager:
 		self.series_dirs = dirs
 
 	def _verify_get_movies_dirs(self):
-		"""Returns movies_dirs from the config.yaml file"""
-		dirs = []
-		for dir in self.yamlconfig["movies_dirs"]:
+		"""Sets self.movies_dirs from the config.yaml file as dict
+		{"section": "path", ...}
+		"""
+		for name, dir in self.yamlconfig["movies_dirs"].items():
 			if not dir:
 				raise ValueError("Couldn't find movies directory from config.yaml")
 			if not os.path.exists(dir):
 				raise ValueError("{} doesn't exists".format(dir))
-			dirs.append(dir)
-		logger.debug("got movies dirs {}".format(dirs))
-		self.movies_dirs = dirs
+		logger.debug("got movies dirs {}".format(self.yamlconfig["movies_dirs"]))
+		self.movies_dirs = self.yamlconfig["movies_dirs"]
 
 	def _verify_get_input_dir(self):
-		"""Returns input_dir from the config.yaml file"""
+		"""Sets self.input_dir as input_dir from the config.yaml file"""
 		if not self.yamlconfig["input_dir"]:
 			raise ValueError("Couldn't find input directory from config.yaml")
 		if not os.path.exists(self.yamlconfig["input_dir"]):
@@ -131,6 +138,7 @@ class ConfigManager:
 		return re.compile("{}".format(output), re.IGNORECASE)
 
 	def _run_before_scripts(self):
+		"""Run before_scripts in config.yaml"""
 		if not self.yamlconfig['before_scripts']:
 			logger.debug("no before scripts to run")
 			return
