@@ -1,5 +1,5 @@
-import re
 import logging
+from guess_language import guess_language
 
 logger = logging.getLogger('main')
 
@@ -8,17 +8,32 @@ valid_movies_rules = [
 	'language',
 ]
 
-movies_regex = re.compile('^movies::', re.IGNORECASE)
+
+def transfer_rules(config, fse):
+	_fix_language(fse)
+	_find_movies_group(config, fse)
+	if not fse.movies_rbook_group:
+		logger.warn("Unable to group")
+		return
+	config_section = fse.movies_rbook_group[8:]
+	for groupname, path in config.movies_dirs.items():
+		if groupname == config_section:
+			fse.transfer_to = path
 
 
-def get_sections(config, fse):
-	"""Gets rules and adds them in a dict"""
-	sections = config.rule_book.sections()
-	for section in sections:
-		if not movies_regex.match(section):
-			del sections[sections.index(section)]
-			continue
-		if section[8:] not in config.movies_dirs.keys():
-			raise KeyError("Section {} doesn't exist in config.yaml".format(section))
-	logger.debug("sections = {}".format(sections))
-	fse.sections = sections
+def _find_movies_group(config, fse):
+	for group, options in config.movies_groups.items():
+		logger.debug("options : {}".format(options))
+		for option in options:
+			if 'language' in option.keys():
+				if option['language'] == fse.guessitmatch['language']:
+					fse.movies_rbook_group = group
+					logger.log(15, "grouped in '{}' ".format(fse.movies_rbook_group[8:]))
+					return
+
+
+def _fix_language(fse):
+	if 'language' in fse.guessitmatch:
+		fse.guessitmatch['language'] = str(fse.guessitmatch['language'])
+	else:
+		fse.guessitmatch['language'] = guess_language(fse.guessitmatch['title'])

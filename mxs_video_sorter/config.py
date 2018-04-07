@@ -5,6 +5,7 @@ import re
 import subprocess
 import shutil
 import configparser
+from collections import OrderedDict
 
 logger = logging.getLogger('main')
 
@@ -28,8 +29,30 @@ class ConfigManager:
 		self.re_compile_file_extension = self._compile_video_file_extensions_pattern()
 		self._get_rule_book()
 		self._get_series_dirs_index()
+		self._get_movies_groups()
 
 	video_extension_list = ['mkv', 'm4v', 'avi', 'mp4', 'mov']
+
+	def _get_movies_groups(self):
+		"""Sets self.movies_sections as list
+		{"movies::english":
+			[{"option1", "value1"}, {"option2", "value2"}]
+		}
+		"""
+		tempdict = OrderedDict()
+		movies_sections_regex = re.compile('movies::', re.IGNORECASE)
+		for section in self.rule_book.sections():
+			if not movies_sections_regex.match(section):
+				continue
+			if section[8:] not in self.movies_dirs.keys():
+				raise KeyError("Section {} doesn't exist in config.yaml".format(section))
+			tempdict.update({section: []})
+			for option in self.rule_book.options(section):
+				value = self.rule_book.get(section, option)
+				tempdict[section].append({option: value})
+
+		logger.debug("got movies rule {}".format(tempdict))
+		self.movies_groups = tempdict
 
 	def _get_series_dirs_index(self):
 		"""sets self.series_dirs_index as

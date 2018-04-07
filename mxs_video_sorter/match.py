@@ -23,6 +23,8 @@ def matcher(config, search_queue, match_queue):
 		if not fse.valid:
 			continue
 
+		logger.debug("type: {}".format(fse.guessitmatch['type']))
+
 		if fse.guessitmatch['type'] == 'episode':
 			series_matcher(config, fse)
 			if not fse.valid:
@@ -56,8 +58,8 @@ def get_guessitmatch(fse):
 		if len(guessitmatch_foldername) > len(guessitmatch):
 			guessitmatch = guessitmatch_foldername
 			logging.debug(
-				"used foldername instead of filename for guessit match. \
-				filename match = '{}' \nfoldername match = '{}'".format(
+				"used foldername instead of filename for guessit match. \n"
+				"filename match = '{}' \nfoldername match = '{}'".format(
 					guessitmatch, guessitmatch_foldername))
 	fse.guessitmatch = guessitmatch
 	try:
@@ -70,8 +72,7 @@ def get_guessitmatch(fse):
 
 def movies_matcher(config, fse):
 	_header_with_title(fse)
-	movies.get_sections(config, fse)
-	# fse.transfer_to = config.movies_dir
+	movies.transfer_rules(config, fse)
 
 
 def series_matcher(config, fse):
