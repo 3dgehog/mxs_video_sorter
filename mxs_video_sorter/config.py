@@ -9,6 +9,8 @@ from collections import OrderedDict
 
 logger = logging.getLogger('main')
 
+CONFTEMPLATE = os.path.join(os.path.dirname(__file__), 'conf_template')
+
 
 class ConfigManager:
 	"""A controller to access all the configs from the config files.
@@ -110,7 +112,7 @@ class ConfigManager:
 			logger.debug("config folder didn't exists, therefore created")
 			os.makedirs(self.config_dir)
 
-		for file in os.listdir("mxs_video_sorter/conf_template"):
+		for file in os.listdir(CONFTEMPLATE):
 			# if files in .conf doesn't exist in $HOME/.config/7m_video_sorter, create it
 			if not os.path.exists(os.path.join(self.config_dir, file)):
 				shutil.copyfile(os.path.join(

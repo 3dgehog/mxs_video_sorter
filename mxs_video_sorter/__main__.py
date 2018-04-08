@@ -4,11 +4,14 @@ import logging.config
 import yaml
 import argparse
 import progressbar
+import os
 
 from mxs_video_sorter.config import ConfigManager
 from mxs_video_sorter import search
 from mxs_video_sorter import match
 from mxs_video_sorter import transfer
+
+LOGGINGYAML = os.path.join(os.path.dirname(__file__), 'logging.yaml')
 
 
 def main():
@@ -35,7 +38,7 @@ def main():
     progressbar.streams.wrap_stderr()
 
     # load logging configs
-    with open('mxs_video_sorter/logging.yaml', 'r') as ymlfile:
+    with open(LOGGINGYAML, 'r') as ymlfile:
         yamlconfig = yaml.load(ymlfile)
     logging.config.dictConfig(yamlconfig)
 
