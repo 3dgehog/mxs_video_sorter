@@ -26,14 +26,17 @@ def main():
     parser.add_argument("-c", "--create-dir",
                         help="Creates Season # dir if it doesn't exists",
                         action="store_true")
-    parser.add_argument("-d", "--debug",
+    parser.add_argument("-v", "--debug",
                         help="Run all debug logs",
                         action="store_true")
-    parser.add_argument("-p", "--prevent-delete",
-                        help="Doesn't delete file after being transfered",
+    parser.add_argument("-d", "--delete",
+                        help="Delete file after being transfered",
                         action="store_true")
     parser.add_argument("-n", "--no-output",
-                        help="Doesn't delete file after being transfered",
+                        help="Doesn't output anything to console",
+                        action="store_true")
+    parser.add_argument("-p", "--progressbar",
+                        help="Shows a progress bar",
                         action="store_true")
     args = parser.parse_args()
 
@@ -78,6 +81,7 @@ def main():
         logger.info("Review Done")
     else:
         logger.info("App Done")
+
 
 if __name__ == "__main__":
     main()

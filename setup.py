@@ -8,7 +8,7 @@ def readme():
 
 setup(
 	name='mxs_video_sorter',
-	version='1.0a2',
+	version='1.0a3',
 	python_requires='>=3.4',
 	description="Mx's video sorter for series and movies",
 	long_description=readme(),

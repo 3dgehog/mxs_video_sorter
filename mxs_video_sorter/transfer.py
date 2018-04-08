@@ -15,7 +15,8 @@ def transferer(config, match_queue):
 	counter = 0
 	full_queue_size = match_queue.qsize()
 
-	if config.args.transfer and not config.args.review and not config.args.no_output:
+	if config.args.transfer and not config.args.review and not \
+		config.args.no_output and config.args.progressbar:
 		logger.debug("Progress Bar thread started")
 		bar = pbar_widgets(full_queue_size)
 		_pbar_thread = threading.Thread(target=_pbar_run, args=(bar,), daemon=True)
@@ -69,13 +70,13 @@ def copy(config, fse):
 
 	logger.info("COPIED")
 
-	if config.args.prevent_delete:
+	if not config.args.delete:
 		return
 	if fse.isdir:
 		shutil.rmtree(fse.path_to_fse)
 	else:
 		os.remove(fse.path_to_fse)
-	logger.info("DELETED FROM Input Folder")
+	logger.info("DELETED")
 
 
 def pbar_widgets(full_queue_size):
