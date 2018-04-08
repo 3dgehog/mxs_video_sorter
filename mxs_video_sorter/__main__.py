@@ -73,6 +73,3 @@ def main():
         logger.info("Review Done")
     else:
         logger.info("App Done")
-
-
-main()
