@@ -3,7 +3,7 @@ A simple python sorter that attempts to sort your video series and movies into t
 ## Installation
 
 ```bash
-git pull https://github.com/Scheercuzy/mxs_video_sorter.git
+git clone https://github.com/Scheercuzy/mxs_video_sorter.git
 virtualenv -p python3 env
 source env/bin/activate
 pip install mxs_video_sorter-master.zip
