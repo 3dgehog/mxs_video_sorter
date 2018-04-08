@@ -38,7 +38,6 @@ class FileSystemEntry:
                     # reason: does not support multiple files right now!!
                     if self.valid:
                         self.valid = False
-                        logger.debug("invalid fse, more than one video file found")
                         break
                     self.vfile.filename = item
                     self.vfile.abspath = os.path.join(self.path_to_fse, item)

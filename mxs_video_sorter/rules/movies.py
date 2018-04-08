@@ -12,6 +12,7 @@ valid_movies_rules = [
 
 def transfer_rules(config, fse):
 	_fix_language(fse)
+	_fix_release_group(fse)
 	_find_movies_group(config, fse)
 	if not fse.movies_rbook_group:
 		logger.warn("Unable to group")
@@ -35,9 +36,20 @@ def _find_movies_group(config, fse):
 					logger.log(15, "grouped in '{}' ".format(fse.movies_rbook_group[8:]))
 					return
 
+			if 'release_group' in option.keys():
+				if option['release_group'] == fse.guessitmatch['release_group']:
+					fse.movies_rbook_group = group
+					logger.log(15, "grouped in '{}' ".format(fse.movies_rbook_group[8:]))
+					return
+
 
 def _fix_language(fse):
 	if 'language' in fse.guessitmatch:
 		fse.guessitmatch['language'] = str(fse.guessitmatch['language'])
 	else:
 		fse.guessitmatch['language'] = guess_language(fse.guessitmatch['title'])
+
+
+def _fix_release_group(fse):
+	if 'release_group' not in fse.guessitmatch:
+		fse.guessitmatch['release_group'] = None

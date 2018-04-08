@@ -25,8 +25,9 @@ def transferer(config, match_queue):
 		counter += 1
 
 		if match_queue.qsize() == 0:
-			if _pbar_thread.is_alive():
-				bar.finish()
+			if full_queue_size is not 0:
+				if _pbar_thread.is_alive():
+					bar.finish()
 			logger.debug("end of match queue")
 			break
 
