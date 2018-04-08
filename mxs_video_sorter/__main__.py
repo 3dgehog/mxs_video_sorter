@@ -32,6 +32,9 @@ def main():
     parser.add_argument("-p", "--prevent-delete",
                         help="Doesn't delete file after being transfered",
                         action="store_true")
+    parser.add_argument("-n", "--no-output",
+                        help="Doesn't delete file after being transfered",
+                        action="store_true")
     args = parser.parse_args()
 
     # fix progressbar with logging
@@ -51,6 +54,8 @@ def main():
         logger.setLevel(15)
     if args.debug:
         logger.setLevel(10)
+    if args.no_output:
+        logger.setLevel(50)
 
     # Configs
     config = ConfigManager()
@@ -73,3 +78,6 @@ def main():
         logger.info("Review Done")
     else:
         logger.info("App Done")
+
+if __name__ == "__main__":
+    main()

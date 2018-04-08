@@ -11,7 +11,7 @@ def matcher(config, search_queue, match_queue):
 	logger.info("Matcher Running")
 
 	while True:
-		print('')
+		logger.log(15, "")
 
 		if search_queue.qsize() == 0:
 			logger.debug("end of search queue")
