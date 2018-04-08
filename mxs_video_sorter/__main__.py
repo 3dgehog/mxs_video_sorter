@@ -58,7 +58,7 @@ def main():
     if args.debug:
         logger.setLevel(10)
     if args.no_output:
-        logger.setLevel(50)
+        logger.disabled = True
 
     # Configs
     config = ConfigManager()

@@ -24,6 +24,7 @@ class FileSystemEntry:
         self.rules = None
         self.transfer_to = None
         self.movies_rbook_group = None
+        self.replace = False
 
     def get_fse_info(self):
         if self.isdir:

@@ -3,6 +3,7 @@ import difflib
 import os
 import re
 import shlex
+import guessit
 
 logger = logging.getLogger('main')
 
@@ -13,7 +14,8 @@ valid_series_rules = [
 	'season',
 	'episode-only',
 	'alt-title',
-	'format-title'
+	'format-title',
+	'no-proper'
 ]
 
 DIFF_CUTOFF = 0.7
@@ -38,7 +40,7 @@ def get_rules(config, fse):
 
 
 # Before Matching
-def matching_rules(config, fse):
+def after_matching_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'alt-title' in fse.rules:
@@ -66,7 +68,7 @@ def valid_title(config, fse):
 
 
 # Before Transfering
-def transfer_rules(config, fse):
+def before_transfer_rules(config, fse):
 	if not fse.rules:
 		return
 	if 'episode-only' in fse.rules:
@@ -125,6 +127,40 @@ def transfer_rules(config, fse):
 			"." + guessit_dict['container']
 		fse.transfer_to = os.path.join(fse.transfer_to, newname)
 		logger.log(15, "rule 'format-title' OK")
+
+
+def during_transfer_rules(config, fse):
+	if 'no-proper' not in fse.rules:
+		for existing in os.listdir(fse.transfer_to):
+			existing_guessitmatch = guessit.guessit(existing)
+			try:
+				if existing_guessitmatch['episode'] != fse.guessitmatch['episode']:
+					continue
+			except KeyError:
+				continue
+			logger.debug("same episode found")
+			try:
+				pass  # REVIEW: need to compare existing files to current file for proper counts
+			except KeyError:
+				continue
+
+		# if 'proper_count' in fse.guessitmatch:
+		# 	logger.debug("this episode is proper")
+		# 	for item in os.listdir(fse.transfer_to):
+		# 		item_guessitmatch = guessit.guessit(item)
+		# 		try:
+		# 			if item_guessitmatch['episode'] != fse.guessitmatch['episode']:
+		# 				continue
+		# 			logger.debug("same episode found")
+		# 			if 'proper_count' not in item_guessitmatch:
+		# 				fse.replace = os.path.join(fse.transfer_to, item)
+		# 				logger.log(11, "replacing episode {} with {}".format(
+		# 					item, fse.vfile.filename
+		# 				))
+		# 				continue
+		# 			logger.warn("both episode are same and proper... ignoring")
+		# 		except KeyError:
+		# 			continue
 
 
 def _invalid_rule_check(rules):

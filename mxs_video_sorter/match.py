@@ -73,12 +73,12 @@ def get_guessitmatch(fse):
 
 def movies_matcher(config, fse):
 	_header_with_title(fse)
-	movies.transfer_rules(config, fse)
+	movies.before_transfer_rules(config, fse)
 
 
 def series_matcher(config, fse):
 	series.get_rules(config, fse)
-	series.matching_rules(config, fse)
+	series.after_matching_rules(config, fse)
 
 	_header_with_title(fse)
 
@@ -96,7 +96,7 @@ def series_matcher(config, fse):
 		fse.matched_dirname = index_match[0]
 		fse.matched_subdirs = config.series_dirs_index[index_match[0]]['subdirs']
 
-	series.transfer_rules(config, fse)
+	series.before_transfer_rules(config, fse)
 
 
 def _header_with_title(fse):

@@ -5,6 +5,8 @@ import time
 import threading
 import os
 
+from mxs_video_sorter.rules import series
+
 logger = logging.getLogger('main')
 
 
@@ -18,7 +20,7 @@ def transferer(config, match_queue):
 	if config.args.transfer and not config.args.review and not \
 		config.args.no_output and config.args.progressbar:
 		logger.debug("Progress Bar thread started")
-		bar = pbar_widgets(full_queue_size)
+		bar = _pbar_widgets(full_queue_size)
 		_pbar_thread = threading.Thread(target=_pbar_run, args=(bar,), daemon=True)
 		_pbar_thread.start()
 	else:
@@ -47,7 +49,10 @@ def transferer(config, match_queue):
 
 		logger.info("Working on {}".format(fse.vfile.filename))
 
-		copy(config, fse)
+		if fse.guessitmatch['type'] == 'episode':
+			series.during_transfer_rules(config, fse)
+
+		copy_and_delete(config, fse)
 
 		if _pbar_thread:
 			bar.update(counter)
@@ -55,7 +60,27 @@ def transferer(config, match_queue):
 	logger.info("Transferer Done")
 
 
-def copy(config, fse):
+def copy_and_delete(config, fse):
+	_copy(config, fse)
+
+	if not config.args.delete:
+		return
+
+	if fse.isdir:
+		shutil.rmtree(fse.path_to_fse)
+	else:
+		os.remove(fse.path_to_fse)
+	logger.info("DELETED")
+
+	if fse.replace:
+		os.remove(fse.replace)
+		logger.info("REMOVED UNPROPER DUPLICATE")
+
+
+def _copy(config, fse):
+	if not fse.transfer_to:
+		logger.info("NOT COPIED, BETTER EPISODE EXISTS ALREADY")
+
 	if fse.guessitmatch['type'] == 'episode':
 		logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
 		shutil.copy(fse.vfile.abspath, fse.transfer_to)
@@ -67,19 +92,10 @@ def copy(config, fse):
 		else:
 			logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
 			shutil.copy(fse.vfile.abspath, fse.transfer_to)
-
 	logger.info("COPIED")
 
-	if not config.args.delete:
-		return
-	if fse.isdir:
-		shutil.rmtree(fse.path_to_fse)
-	else:
-		os.remove(fse.path_to_fse)
-	logger.info("DELETED")
 
-
-def pbar_widgets(full_queue_size):
+def _pbar_widgets(full_queue_size):
 	widgets = [
 		progressbar.AnimatedMarker(),
 		" ",

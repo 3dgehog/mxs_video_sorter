@@ -10,7 +10,7 @@ valid_movies_rules = [
 ]
 
 
-def transfer_rules(config, fse):
+def before_transfer_rules(config, fse):
 	_fix_language(fse)
 	_fix_release_group(fse)
 	_find_movies_group(config, fse)
