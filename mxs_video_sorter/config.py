@@ -116,7 +116,7 @@ class ConfigManager:
 			# if files in .conf doesn't exist in $HOME/.config/7m_video_sorter, create it
 			if not os.path.exists(os.path.join(self.config_dir, file)):
 				shutil.copyfile(os.path.join(
-					"mxs_video_sorter/conf_template", file),
+					CONFTEMPLATE, file),
 					os.path.join(self.config_dir, file))
 
 	def _verify_get_series_dirs(self):
