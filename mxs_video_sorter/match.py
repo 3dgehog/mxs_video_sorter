@@ -23,7 +23,7 @@ def matcher(config, search_queue, match_queue):
 		if not fse.valid:
 			continue
 
-		logger.debug("type: {}".format(fse.guessitmatch['type']))
+		logger.debug("{}".format(fse.guessitmatch))
 
 		if fse.guessitmatch['type'] == 'episode':
 			series_matcher(config, fse)
@@ -57,16 +57,17 @@ def get_guessitmatch(fse):
 		guessitmatch_foldername = guessit.guessit(fse.fse)
 		if len(guessitmatch_foldername) > len(guessitmatch):
 			guessitmatch = guessitmatch_foldername
-			logging.debug(
-				"used foldername instead of filename for guessit match. \n"
-				"filename match = '{}' \nfoldername match = '{}'".format(
-					guessitmatch, guessitmatch_foldername))
+			logger.debug("used foldername instead of filename for guessit match.")
+			# logger.debug(
+			# 	"used foldername instead of filename for guessit match. \n"
+			# 	"filename match = '{}' \nfoldername match = '{}'".format(
+			# 		guessitmatch, guessitmatch_foldername))
 	fse.guessitmatch = guessitmatch
 	try:
 		fse.vfile.title = guessitmatch['title']
 	except KeyError:
-		logging.warning("error trying to find title for '{}'".format(fse.vfile.filename))
-		logging.debug("error guessit match dict '{}'".format(fse.guessitmatch))
+		logger.warning("error trying to find title for '{}'".format(fse.vfile.filename))
+		logger.debug("error guessit match dict '{}'".format(fse.guessitmatch))
 		fse.valid = False
 
 

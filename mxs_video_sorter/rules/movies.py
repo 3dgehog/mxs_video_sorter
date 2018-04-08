@@ -33,13 +33,13 @@ def _find_movies_group(config, fse):
 			if 'language' in option.keys():
 				if option['language'] == fse.guessitmatch['language']:
 					fse.movies_rbook_group = group
-					logger.log(15, "grouped in '{}' ".format(fse.movies_rbook_group[8:]))
+					logger.log(15, "group: '{}' <-- language".format(fse.movies_rbook_group[8:]))
 					return
 
 			if 'release_group' in option.keys():
 				if option['release_group'] == fse.guessitmatch['release_group']:
 					fse.movies_rbook_group = group
-					logger.log(15, "grouped in '{}' ".format(fse.movies_rbook_group[8:]))
+					logger.log(15, "group: '{}' <-- release_group".format(fse.movies_rbook_group[8:]))
 					return
 
 
