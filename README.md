@@ -126,6 +126,10 @@ it currently only has 6 available options
 
    Formats the video file right before trnsfering. The options are --> (title), (episode), (season), (title1), (title2), (title...). The titles with a number are word indexes in your title, so House MD would be title1=House title2=MD
 
+7. no-proper
+
+   if passed, it doesn't attempt to read and delete an existing episode if its PROPER version comes along. If its a tie, the version from the inout directory always wins
+
 #### movies::group
 it currently only has 2 available options
 

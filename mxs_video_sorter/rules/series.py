@@ -131,18 +131,42 @@ def before_transfer_rules(config, fse):
 
 def during_transfer_rules(config, fse):
 	if 'no-proper' not in fse.rules:
-		for existing in os.listdir(fse.transfer_to):
+		if not os.path.isdir(fse.transfer_to):
+			transfer_to = os.path.dirname(fse.transfer_to)
+		else:
+			transfer_to = fse.transfer_to
+
+		for existing in transfer_to:
 			existing_guessitmatch = guessit.guessit(existing)
 			try:
 				if existing_guessitmatch['episode'] != fse.guessitmatch['episode']:
 					continue
 			except KeyError:
 				continue
+			fse_obj = False
+			ext_obj = False
 			logger.debug("same episode found")
-			try:
-				pass  # REVIEW: need to compare existing files to current file for proper counts
-			except KeyError:
-				continue
+			if 'proper_count' in fse.guessitmatch:
+				fse_obj = True
+			if 'proper_count' in existing_guessitmatch:
+				ext_obj = True
+			if fse_obj and ext_obj:
+				logger.debug("both are proper, favoring the new")
+				fse.replace = os.path.join(transfer_to, existing)
+
+			elif fse_obj and not ext_obj:
+				logger.debug("this file proper, existing isn't")
+				fse.replace = os.path.join(transfer_to, existing)
+
+			elif ext_obj and not fse_obj:
+				logger.debug("this file isn't proper, existing is")
+				fse.transfer_to = None
+
+			else:
+				logger.debug("both are normal, favoring the new")
+				fse.replace = os.path.join(fse.transfer_to, existing)
+			break
+		logger.log(15, "rule 'proper' OK")
 
 		# if 'proper_count' in fse.guessitmatch:
 		# 	logger.debug("this episode is proper")

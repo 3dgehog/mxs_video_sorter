@@ -74,12 +74,12 @@ def copy_and_delete(config, fse):
 
 	if fse.replace:
 		os.remove(fse.replace)
-		logger.info("REMOVED UNPROPER DUPLICATE")
+		logger.info("DELETED EXISTING DUPLICATE")
 
 
 def _copy(config, fse):
 	if not fse.transfer_to:
-		logger.info("NOT COPIED, BETTER EPISODE EXISTS ALREADY")
+		logger.info("NOT COPIED")
 
 	if fse.guessitmatch['type'] == 'episode':
 		logger.debug("copying: '{}' to: '{}'".format(fse.vfile.filename, fse.transfer_to))
