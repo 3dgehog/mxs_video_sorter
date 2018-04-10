@@ -136,7 +136,7 @@ def during_transfer_rules(config, fse):
 		else:
 			transfer_to = fse.transfer_to
 
-		for existing in transfer_to:
+		for existing in os.listdir(transfer_to):
 			existing_guessitmatch = guessit.guessit(existing)
 			try:
 				if existing_guessitmatch['episode'] != fse.guessitmatch['episode']:
