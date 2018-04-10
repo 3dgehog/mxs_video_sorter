@@ -168,24 +168,6 @@ def during_transfer_rules(config, fse):
 			break
 		logger.log(15, "rule 'proper' OK")
 
-		# if 'proper_count' in fse.guessitmatch:
-		# 	logger.debug("this episode is proper")
-		# 	for item in os.listdir(fse.transfer_to):
-		# 		item_guessitmatch = guessit.guessit(item)
-		# 		try:
-		# 			if item_guessitmatch['episode'] != fse.guessitmatch['episode']:
-		# 				continue
-		# 			logger.debug("same episode found")
-		# 			if 'proper_count' not in item_guessitmatch:
-		# 				fse.replace = os.path.join(fse.transfer_to, item)
-		# 				logger.log(11, "replacing episode {} with {}".format(
-		# 					item, fse.vfile.filename
-		# 				))
-		# 				continue
-		# 			logger.warn("both episode are same and proper... ignoring")
-		# 		except KeyError:
-		# 			continue
-
 
 def _invalid_rule_check(rules):
 	for rule in rules:

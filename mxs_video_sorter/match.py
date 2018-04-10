@@ -58,10 +58,6 @@ def get_guessitmatch(fse):
 		if len(guessitmatch_foldername) > len(guessitmatch):
 			guessitmatch = guessitmatch_foldername
 			logger.debug("used foldername instead of filename for guessit match.")
-			# logger.debug(
-			# 	"used foldername instead of filename for guessit match. \n"
-			# 	"filename match = '{}' \nfoldername match = '{}'".format(
-			# 		guessitmatch, guessitmatch_foldername))
 	fse.guessitmatch = guessitmatch
 	try:
 		fse.vfile.title = guessitmatch['title']
@@ -84,6 +80,7 @@ def series_matcher(config, fse):
 
 	if not series.valid_title(config, fse):
 		fse.valid = False
+		return
 
 	index_match = difflib.get_close_matches(
 		fse.vfile.title, config.series_dirs_index.keys(), n=1, cutoff=0.6)
@@ -91,6 +88,7 @@ def series_matcher(config, fse):
 	if not index_match:
 		logger.warning("NO MATCH")
 		fse.valid = False
+		return
 	else:
 		fse.matched_dirpath = config.series_dirs_index[index_match[0]]['path']
 		fse.matched_dirname = index_match[0]
